@@ -1,0 +1,9 @@
+#title {
+    text-align: center;
+}
+
+#display {
+    position: relative;
+    display: block;
+    margin: auto;
+}
