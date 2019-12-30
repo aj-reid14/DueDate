@@ -56,6 +56,15 @@ function ConfigureButtons() {
                 break;
         }
     }
+
+    document.onkeyup = function(event) {
+        switch (event.code) {
+            case "ArrowLeft":
+            case "ArrowRight":
+                StopMove();
+                break;
+        }
+    }
 }
 
 function MoveLeft() {
@@ -64,4 +73,8 @@ function MoveLeft() {
 
 function MoveRight() {
     gamePiece.speedX += 1;
+}
+
+function StopMove() {
+    gamePiece.speedX = 0;
 }
