@@ -1,11 +1,11 @@
 let gamePiece;
+let maxWidth = $(window).width() * 0.7;
 let gameArea = {
-    canvas: $("<canvas id='display'>"),
+    // Define width here to prevent stretching when drawing
+    canvas: $(`<canvas id='display' width='${maxWidth}' height='500px'>`),
     start: function() {
-        this.canvas.width("90%");
-        this.canvas.height("500px");
         this.canvas.css("border", "2px solid black");
-        this.context = this.canvas[0].getContext("2d");
+        this.context = this.canvas[0].getContext('2d');
         $(document.body).prepend(this.canvas);
         this.interval = setInterval(updateGameArea, 20);
     },
@@ -29,7 +29,7 @@ function component(width, height, color, x, y) {
     this.y = y;
 
     this.update = function() {
-        ctx = gameArea.context;
+        let ctx = gameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
