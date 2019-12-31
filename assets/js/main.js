@@ -13,12 +13,15 @@ let gameArea = {
     },
     clear: function() {
         this.context.clearRect(0, 0, this.canvas.width(), this.canvas.height());
+    },
+    stop: function() {
+        clearInterval(this.interval);
     }
 }
 
 $(document).ready(function () {
      gameArea.start();
-     gamePiece = new component(10, 10, "darkgreen", 25, 25);
+     gamePiece = new component(25, 25, "darkgreen", 25, 25);
      gameObstacle = new component(5, 300, "red", 150, 300);
      ConfigureButtons();
 })
@@ -34,7 +37,7 @@ function component(width, height, color, x, y) {
 
     this.update = function() {
         ctx = gameArea.context;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
@@ -42,9 +45,40 @@ function component(width, height, color, x, y) {
         this.x += this.speedX;
         this.y += this.speedY;
     }
+
+    this.crashWith = function(otherObj) {
+
+        // Define Current Dimensions
+        let myLeft = this.x;
+        let myRight = this.x + (this.width);
+        let myTop = this.y;
+        let myBottom = this.y + (this.height);
+
+        // Define Dimensions for Potential Colliding Object
+        let otherLeft = otherObj.x;
+        let otherRight = otherObj.x + (otherObj.width);
+        let otherTop = otherObj.y;
+        let otherBottom = otherObj.y + (otherObj.height);
+
+        let collided = true;
+
+        if ((myBottom < otherTop) ||
+            (myTop > otherBottom) ||
+            (myRight < otherLeft) ||
+            (myLeft > otherRight)) { collided = false; }
+
+            return collided;
+    }
 }
 
 function updateGameArea() {
+
+    if (gamePiece.crashWith(gameObstacle)) {
+        gamePiece.color = "purple";
+    } else {
+        gamePiece.color = "darkgreen";
+    }
+
     gameArea.clear();
     gameObstacle.update();
     gamePiece.newPos();
