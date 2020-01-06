@@ -1,3 +1,7 @@
+let player;
+let platforms = [];
+let shootas = [];
+
 $(document).ready(function () {
     CreateComponents();
     ConfigureButtons();
@@ -7,6 +11,27 @@ function CreateComponents() {
 
     // Static Box (Red)
     player = new component("player", "auto", "auto", "./assets/images/laptop/idle.gif", 25, 25, "image");
+    
+    let maxPlatformLeft = $("#display")[0].getBoundingClientRect().right;
+    let shootaLeft = maxPlatformLeft - 350;
+    
+    let jonboy = new component("jonboy", 100, 100, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
+    shootas.push(jonboy);
+
+    let derry = new component("derry", 100, 100, "./assets/images/shootas/derry/idle.gif", shootaLeft, 125, "image");
+    shootas.push(derry);
+
+    let charlington = new component("jonboy", 100, 100, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 250, "image");
+    shootas.push(charlington);
+
+    let platformTop = 100;
+
+    for (let i = 0; i < 3; i++) {
+        let platform = new component(`platform${i}`, 200, 25, "darkgrey", 0, 0, "none");
+        platform.element.css({top: platformTop, left: maxPlatformLeft - (platform.width * 2)});
+        platforms.push(platform);
+        platformTop += 125;
+    }
 }
 
 function component(id, width, height, color, x, y, type) {
@@ -21,12 +46,9 @@ function component(id, width, height, color, x, y, type) {
     if (type === "image") {
         this.src = color;
         this.element = $(`<img id='${this.id}' src='${this.src}'>`);
-        this.element.css({position: "absolute"});
-        this.element.css({top: 0, left: 0});
+        this.element.css({position: "absolute", width: this.width, height: this.height});
+        this.element.css({top: y, left: x});
         $("#display").append(this.element);
-
-        console.log($("#player"));
-        console.log($("#player")[0].height);
 
         if (this.id === "player") {
             let displayBottom = $("#display")[0].getBoundingClientRect().bottom;
@@ -35,7 +57,12 @@ function component(id, width, height, color, x, y, type) {
         }
 
     } else {
+        this.element = $(`<div id='${this.id}'>`);
         this.color = color;
+        this.element.css({position: "absolute", width: this.width, height: this.height});
+        this.element.css("background-color", color);
+        this.element.css("z-index", 10);
+        $("#display").append(this.element);
     }
 
     this.move = function (direction) {
