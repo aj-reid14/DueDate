@@ -21,8 +21,10 @@ let gameArea = {
 }
 
 $(document).ready(function () {
+    // Initialize animations for sprites (GIF frames)
+
     gameArea.start();
-    gamePiece = new component(25, 25, "darkgreen", 25, 25);
+    gamePiece = new component(100, 100, "green", 25, 25);
     gameObstacle = new component(5, 300, "red", 150, 300);
     background = new component(maxWidth, 500, "assets/images/sky.jpg", 0, 0, "image");
     ConfigureButtons();
@@ -34,7 +36,6 @@ function component(width, height, color, x, y, type) {
     if (type === "image") {
         this.image = new Image();
         this.image.src = color;
-
     }
 
     this.width = width;
@@ -108,16 +109,16 @@ function ConfigureButtons() {
     document.onkeydown = function (event) {
         switch (event.code) {
             case "ArrowLeft":
-                MoveLeft();
+                Move("left");
                 break;
             case "ArrowRight":
-                MoveRight();
+                Move("right");
                 break;
             case "ArrowUp":
-                MoveUp();
+                Move("up");
                 break;
             case "ArrowDown":
-                MoveDown();
+                Move("down");
                 break;
         }
     }
@@ -126,31 +127,42 @@ function ConfigureButtons() {
         switch (event.code) {
             case "ArrowLeft":
             case "ArrowRight":
+                StopMove("hor");
+                break;
             case "ArrowUp":
             case "ArrowDown":
-                StopMove();
+                StopMove("ver");
                 break;
         }
     }
 }
 
-function MoveLeft() {
-    gamePiece.speedX = -1;
+function Move(direction) {
+
+    switch (direction) {
+        case "left":
+            gamePiece.speedX = -1;
+            break;
+        case "right":
+            gamePiece.speedX = 1;
+            break;
+        case "up":
+            gamePiece.speedY = -1;
+            break;
+        case "down":
+            gamePiece.speedY = 1;
+            break;
+    }
 }
 
-function MoveRight() {
-    gamePiece.speedX = 1;
-}
+function StopMove(direction) {
 
-function MoveUp() {
-    gamePiece.speedY = -1;
-}
-
-function MoveDown() {
-    gamePiece.speedY = 1;
-}
-
-function StopMove() {
-    gamePiece.speedX = 0;
-    gamePiece.speedY = 0;
+    switch (direction) {
+        case "hor":
+            gamePiece.speedX = 0;
+            break;
+        case "ver":
+            gamePiece.speedY = 0;
+            break;
+    }
 }
