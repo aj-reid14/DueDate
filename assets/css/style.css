@@ -9,6 +9,10 @@
     height: 500px;
     margin: auto;
     border: 3px groove darkblue;
+    border-bottom: 15px solid black;
+    padding: 0;
+
+    background-color: #5fb5e7;
 }
 
 .box {

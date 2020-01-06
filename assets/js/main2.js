@@ -6,7 +6,7 @@ $(document).ready(function () {
 function CreateComponents() {
 
     // Static Box (Red)
-    player = new component("player", 100, 125, "./assets/images/laptop/idle.gif", 25, 25, "image");
+    player = new component("player", "auto", "auto", "./assets/images/laptop/idle.gif", 25, 25, "image");
 }
 
 function component(id, width, height, color, x, y, type) {
@@ -18,14 +18,24 @@ function component(id, width, height, color, x, y, type) {
     this.y = y;
     this.speedY = 0;
 
-    if (type === "image") { this.src = color; }
-    else { this.color = color; }
-
     if (type === "image") {
-        this.element = $(`<img id='${this.id}' src='${this.src}' width=${width} height=${height}>`);
+        this.src = color;
+        this.element = $(`<img id='${this.id}' src='${this.src}'>`);
         this.element.css({position: "absolute"});
         this.element.css({top: 0, left: 0});
         $("#display").append(this.element);
+
+        console.log($("#player"));
+        console.log($("#player")[0].height);
+
+        if (this.id === "player") {
+            let displayBottom = $("#display")[0].getBoundingClientRect().bottom;
+            let playerHeight = 89 + 20;
+            this.element.css({top: displayBottom - playerHeight});
+        }
+
+    } else {
+        this.color = color;
     }
 
     this.move = function (direction) {
@@ -65,7 +75,7 @@ function ConfigureButtons() {
     document.onkeydown = function (event) {
         switch (event.code) {
             case "ArrowLeft":
-                player.src = "./assets/images/laptop/walk_left.gif";
+                player.src = "./assets/images/laptop/walk_right.gif";
                 player.move("left");
                 break;
             case "ArrowRight":
