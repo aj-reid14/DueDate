@@ -1,3 +1,7 @@
+body {
+    font-family: 'ZCOOL KuaiLe', cursive;
+}
+
 #title {
     text-align: center;
 }
@@ -5,7 +9,7 @@
 #display {
     position: relative;
     display: block;
-    width: 80%;
+    width: 1498px;
     height: 500px;
     margin: auto;
     border: 3px groove darkblue;
@@ -16,7 +20,6 @@
 }
 
 .platform {
-    position: absolute;
     border: 1px solid black;
-    background-color: darkgray;
+    background-image: url("../images/concrete.jpg")
 }

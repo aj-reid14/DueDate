@@ -12,25 +12,32 @@ function CreateComponents() {
     // Static Box (Red)
     player = new component("player", "auto", "auto", "./assets/images/laptop/idle.gif", 25, 25, "image");
     
-    let maxPlatformLeft = $("#display")[0].getBoundingClientRect().right;
+    let maxPlatformLeft = $("#display")[0].getBoundingClientRect().right + 5;
+
+    // Create the Shootas
+    let shootaHeight = 100;
+    let shootaDistance = 130;
     let shootaLeft = maxPlatformLeft - 350;
     
-    let jonboy = new component("jonboy", 100, 100, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
+    let jonboy = new component("jonboy", 100, shootaHeight, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
     shootas.push(jonboy);
 
-    let derry = new component("derry", 100, 100, "./assets/images/shootas/derry/idle.gif", shootaLeft, 125, "image");
+    let derry = new component("derry", 100, shootaHeight, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
     shootas.push(derry);
 
-    let charlington = new component("jonboy", 100, 100, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 250, "image");
+    let charlington = new component("jonboy", 100, shootaHeight, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
     shootas.push(charlington);
+
+    // Create the Platforms
 
     let platformTop = 100;
 
     for (let i = 0; i < 3; i++) {
         let platform = new component(`platform${i}`, 200, 25, "darkgrey", 0, 0, "none");
         platform.element.css({top: platformTop, left: maxPlatformLeft - (platform.width * 2)});
+        platform.element.addClass("platform");
         platforms.push(platform);
-        platformTop += 125;
+        platformTop += shootaDistance;
     }
 }
 
