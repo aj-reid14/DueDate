@@ -15,21 +15,20 @@ function CreateComponents() {
     let maxPlatformLeft = $("#display")[0].getBoundingClientRect().right + 5;
 
     // Create the Shootas
-    let shootaHeight = 100;
     let shootaDistance = 130;
     let shootaLeft = maxPlatformLeft - 350;
     
-    let jonboy = new component("jonboy", 100, shootaHeight, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
+    let jonboy = new component("jonboy", 100, 100, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
     jonboy.element.css("z-index", 1);
     console.log(`${jonboy.id} | Top: ${jonboy.element.css("top")} | Left: ${jonboy.element.css("left")}`);
     shootas.push(jonboy);
 
-    let derry = new component("derry", 100, shootaHeight, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
+    let derry = new component("derry", 100, 100, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
     derry.element.css("z-index", 1);
     console.log(`${derry.id} | Top: ${derry.element.css("top")} | Left: ${derry.element.css("left")}`);
     shootas.push(derry);
 
-    let charlington = new component("charlington", 100, shootaHeight, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
+    let charlington = new component("charlington", 100, 100, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
     charlington.element.css("z-index", 1);
     console.log(`${charlington.id} | Top: ${charlington.element.css("top")} | Left: ${charlington.element.css("left")}`);
     shootas.push(charlington);
@@ -128,9 +127,6 @@ function ConfigureButtons() {
                 CreateDaBoom(shootas[0]);
                 CreateDaBoom(shootas[1]);
                 CreateDaBoom(shootas[2]);
-                break;
-            case "ArrowDown":
-                KillDaBoom();
                 break;
         }
 
