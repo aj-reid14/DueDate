@@ -20,12 +20,18 @@ function CreateComponents() {
     let shootaLeft = maxPlatformLeft - 350;
     
     let jonboy = new component("jonboy", 100, shootaHeight, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
+    jonboy.element.css("z-index", 1);
+    console.log(`${jonboy.id} | Top: ${jonboy.element.css("top")} | Left: ${jonboy.element.css("left")}`);
     shootas.push(jonboy);
 
     let derry = new component("derry", 100, shootaHeight, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
+    derry.element.css("z-index", 1);
+    console.log(`${derry.id} | Top: ${derry.element.css("top")} | Left: ${derry.element.css("left")}`);
     shootas.push(derry);
 
-    let charlington = new component("jonboy", 100, shootaHeight, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
+    let charlington = new component("charlington", 100, shootaHeight, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
+    charlington.element.css("z-index", 1);
+    console.log(`${charlington.id} | Top: ${charlington.element.css("top")} | Left: ${charlington.element.css("left")}`);
     shootas.push(charlington);
 
     // Create the Platforms
@@ -72,6 +78,8 @@ function component(id, width, height, color, x, y, type) {
         $("#display").append(this.element);
     }
 
+    this.element = $(`#${this.id}`);
+
     this.move = function (direction) {
         Move(this.id, direction);
     }
@@ -116,6 +124,14 @@ function ConfigureButtons() {
                 player.src = "./assets/images/laptop/walk_right.gif";
                 player.move("right");
                 break;
+            case "Space":
+                CreateDaBoom(shootas[0]);
+                CreateDaBoom(shootas[1]);
+                CreateDaBoom(shootas[2]);
+                break;
+            case "ArrowDown":
+                KillDaBoom();
+                break;
         }
 
         if (player.element.attr("src") !== player.src) {
@@ -135,4 +151,32 @@ function ConfigureButtons() {
             player.element.attr("src", player.src);
         }
     }
+}
+
+function CreateDaBoom(shoota) {
+
+    let boomTop = shoota.y + (shoota.height * 0.35);
+    let boomLeft = shoota.x;
+    let daBoomID = `daBoom-${shoota.id}`;
+
+    let daBoom = $(`<img id='${daBoomID}' src='./assets/images/gun_boom.gif'>`);
+    daBoom.css({
+        display: "none",
+        position: "absolute",
+        top: boomTop,
+        left: boomLeft - 40,
+        width: "50px",
+        height: "50px",
+        transform: "rotate(-90deg)"
+    });
+    $("#display").append(daBoom);
+    $(`#${daBoomID}`).fadeIn(150, function() {
+        setTimeout(KillDaBoom, 200, daBoomID);
+    });
+}
+
+function KillDaBoom(boomID) {
+    $(`#${boomID}`).fadeOut(500, function () {
+        $(`#${boomID}`).remove();
+    });
 }
