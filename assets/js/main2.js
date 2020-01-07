@@ -172,7 +172,7 @@ function CreateDaBoom(shoota) {
 }
 
 function KillDaBoom(boomID) {
-    $(`#${boomID}`).fadeOut(500, function () {
+    $(`#${boomID}`).fadeOut(150, function () {
         $(`#${boomID}`).remove();
     });
 }
