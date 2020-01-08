@@ -1,4 +1,5 @@
 let player;
+let music = new Audio("assets/audio/theme.wav");
 let platforms = [];
 let shootas = [];
 let projectiles = [
@@ -6,9 +7,17 @@ let projectiles = [
     "./assets/images/projectiles/projectile_project.png"
 ];
 
+
 $(document).ready(function () {
     CreateComponents();
     ConfigureButtons();
+
+    music.loop = true;
+    music.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+
 })
 
 function CreateComponents() {
@@ -125,6 +134,11 @@ function Move(id, direction) {
 }
 
 function ConfigureButtons() {
+
+    $("#display").click(function() {
+        music.play();
+    })
+
     document.onkeydown = function (event) {
         switch (event.code) {
             case "ArrowLeft":
