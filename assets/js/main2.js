@@ -1,6 +1,10 @@
 let player;
 let platforms = [];
 let shootas = [];
+let projectiles = [
+    "./assets/images/projectiles/projectile_hw.png",
+    "./assets/images/projectiles/projectile_project.png"
+]
 
 $(document).ready(function () {
     CreateComponents();
@@ -182,12 +186,13 @@ function CreateDaBoom(shoota) {
 
 function CreateProjectile(x, y) {
 
-    let projectile = $("<div class='projectile'>");
+    let randProjectile = Math.floor(Math.random() * 2);
+
+    let projectile = $(`<img class='projectile' src='${projectiles[randProjectile]}'>`);
     projectile.css({
-        width: 18,
-        height: 28,
+        width: 35,
+        height: 45,
         position: "absolute",
-        "background-color": "red",
         top: y + 10,
         left: x
     });
