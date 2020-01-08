@@ -1,5 +1,6 @@
 let player;
 let music = new Audio("assets/audio/theme.wav");
+let musicPlaying = false;
 let platforms = [];
 let shootas = [];
 let projectiles = [
@@ -14,8 +15,10 @@ $(document).ready(function () {
 
     music.loop = true;
     music.addEventListener('ended', function() {
+        musicPlaying = false;
         this.currentTime = 0;
         this.play();
+        musicPlaying = true;
     }, false);
 
 })
@@ -136,8 +139,11 @@ function Move(id, direction) {
 function ConfigureButtons() {
 
     $("#display").click(function() {
-        music.play();
-    })
+        if (!musicPlaying) {
+            music.play();
+            musicPlaying = true;
+        }
+    });
 
     document.onkeydown = function (event) {
         switch (event.code) {
