@@ -9,8 +9,7 @@ body {
 
 #display {
     position: relative;
-    display: block;
-    width: 1498px;
+    width: 90%;
     height: 500px;
     margin: auto;
     border: 3px groove darkblue;
@@ -22,5 +21,5 @@ body {
 
 .platform {
     border: 1px solid black;
-    background-image: url("../images/concrete.jpg")
+    background-image: url("../images/concrete.jpg");
 }
