@@ -4,7 +4,7 @@ let shootas = [];
 let projectiles = [
     "./assets/images/projectiles/projectile_hw.png",
     "./assets/images/projectiles/projectile_project.png"
-]
+];
 
 $(document).ready(function () {
     CreateComponents();
@@ -22,27 +22,28 @@ function CreateComponents() {
     console.log(maxPlatformLeft);
 
     // Create the Shootas
+    let shootaSize = 115;
     let shootaDistance = 130;
     let shootaLeft = 25;
 
-    let jonboy = new component("jonboy", 100, 100, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
+    let jonboy = new component("jonboy", shootaSize, shootaSize, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
     jonboy.element.addClass("shoota");
     console.log(`${jonboy.id} | Top: ${jonboy.element.css("top")} | Left: ${jonboy.element.css("left")}`);
     shootas.push(jonboy);
 
-    let derry = new component("derry", 100, 100, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
+    let derry = new component("derry", shootaSize, shootaSize, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
     derry.element.addClass("shoota");
     console.log(`${derry.id} | Top: ${derry.element.css("top")} | Left: ${derry.element.css("left")}`);
     shootas.push(derry);
 
-    let charlington = new component("charlington", 100, 100, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
+    let charlington = new component("charlington", shootaSize, shootaSize, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
     charlington.element.addClass("shoota");
     console.log(`${charlington.id} | Top: ${charlington.element.css("top")} | Left: ${charlington.element.css("left")}`);
     shootas.push(charlington);
 
     // Create the Platforms
 
-    let platformTop = 100;
+    let platformTop = shootaSize;
 
     for (let i = 0; i < 3; i++) {
         let platform = new component(`platform${i}`, platformWidth, 25, "darkgrey", 0, platformTop, "none");
@@ -70,13 +71,13 @@ function component(id, width, height, color, x, y, type) {
         this.element.css({ top: y, left: x });
 
         if (this.id === "player") {
-            let displayBottom = $("#display")[0].getBoundingClientRect().bottom - 20;
+            let displayBottom = $("#display")[0].getBoundingClientRect().bottom - 22;
             let playerHeight = 89;
             this.element.css({ margin: "0px", top: displayBottom - playerHeight });
 
             $(window).resize(function () {
                 if ($("#player")[0].getBoundingClientRect().left > $("#display")[0].getBoundingClientRect().right) {
-                    $("#player").css({ left: $("#display")[0].getBoundingClientRect().width - 150 });
+                    $("#player").css({ left: $("#display")[0].getBoundingClientRect().width - 150});
                 }
 
             })
@@ -135,7 +136,8 @@ function ConfigureButtons() {
                 player.move("right");
                 break;
             case "Space":
-                CreateDaBoom(shootas[1]);
+                let randShoota = Math.floor(Math.random() * shootas.length);
+                CreateDaBoom(shootas[randShoota]);
                 break;
         }
 
@@ -186,7 +188,7 @@ function CreateDaBoom(shoota) {
 
 function CreateProjectile(x, y) {
 
-    let randProjectile = Math.floor(Math.random() * 2);
+    let randProjectile = Math.floor(Math.random() * projectiles.length);
 
     let projectile = $(`<img class='projectile' src='${projectiles[randProjectile]}'>`);
     projectile.css({
@@ -208,7 +210,7 @@ function CreateProjectile(x, y) {
         duration: 5000,
         easing: "linear",
         complete: function() {
-            projectile.fadeOut(500, function() {
+            projectile.fadeOut(150, function() {
                 projectile.remove();
             })
         }
