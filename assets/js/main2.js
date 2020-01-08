@@ -22,20 +22,17 @@ function CreateComponents() {
     let shootaLeft = 25;
 
     let jonboy = new component("jonboy", 100, 100, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
-    jonboy.element.css("z-index", 1);
-    jonboy.element.css("transform", "scaleX(-1)");
+    jonboy.element.addClass("shoota");
     console.log(`${jonboy.id} | Top: ${jonboy.element.css("top")} | Left: ${jonboy.element.css("left")}`);
     shootas.push(jonboy);
 
     let derry = new component("derry", 100, 100, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
-    derry.element.css("z-index", 1);
-    derry.element.css("transform", "scaleX(-1)");
+    derry.element.addClass("shoota");
     console.log(`${derry.id} | Top: ${derry.element.css("top")} | Left: ${derry.element.css("left")}`);
     shootas.push(derry);
 
     let charlington = new component("charlington", 100, 100, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
-    charlington.element.css("z-index", 1);
-    charlington.element.css("transform", "scaleX(-1)");
+    charlington.element.addClass("shoota");
     console.log(`${charlington.id} | Top: ${charlington.element.css("top")} | Left: ${charlington.element.css("left")}`);
     shootas.push(charlington);
 
@@ -134,9 +131,7 @@ function ConfigureButtons() {
                 player.move("right");
                 break;
             case "Space":
-                CreateDaBoom(shootas[0]);
                 CreateDaBoom(shootas[1]);
-                CreateDaBoom(shootas[2]);
                 break;
         }
 
@@ -169,16 +164,51 @@ function CreateDaBoom(shoota) {
     daBoom.css({
         display: "none",
         position: "absolute",
+        "z-index": 15,
         top: boomTop,
         left: boomLeft - 10,
         width: "50px",
         height: "50px",
         transform: "rotate(90deg)"
     });
+
     $("#display").append(daBoom);
+
     $(`#${daBoomID}`).fadeIn(150, function () {
+        CreateProjectile(boomLeft, boomTop);
         setTimeout(KillDaBoom, 200, daBoomID);
     });
+}
+
+function CreateProjectile(x, y) {
+
+    let projectile = $("<div class='projectile'>");
+    projectile.css({
+        width: 18,
+        height: 28,
+        position: "absolute",
+        "background-color": "red",
+        top: y + 10,
+        left: x
+    });
+
+    $("#display").append(projectile);
+
+    let maxWidth = $("#display")[0].getBoundingClientRect().width - projectile.width() - 6;
+
+    projectile.animate({
+        left: maxWidth,
+        transform: "scaleX(3)"
+    }, {
+        duration: 5000,
+        easing: "linear",
+        complete: function() {
+            projectile.fadeOut(500, function() {
+                projectile.remove();
+            })
+        }
+    });
+
 }
 
 function KillDaBoom(boomID) {

@@ -23,3 +23,37 @@ body {
     border: 1px solid black;
     background-image: url("../images/concrete.jpg");
 }
+
+.shoota {
+    z-index: 20;
+    transform: scaleX(-1);
+}
+
+.projectile {
+    z-index: 10;
+
+    animation: projectileSpin 5s linear 1 normal forwards;
+    -moz-animation: projectileSpin 5s linear 1 normal forwards;
+    -o-animation: projectileSpin 5s linear 1 normal forwards;
+    -webkit-animation: projectileSpin 5s linear 1 normal forwards;
+}
+
+@keyframes projectileSpin {
+    from {transform: rotateZ(0deg);}
+    to {transform: rotateZ(720deg);}
+}
+
+@-moz-keyframes projectileSpin {
+    from {transform: rotateZ(0deg);}
+    to {transform: rotateZ(720deg);}
+}
+
+@-o-keyframes projectileSpin {
+    from {transform: rotateZ(0deg);}
+    to {transform: rotateZ(720deg);}
+}
+
+@-webkit-keyframes projectileSpin {
+    from {transform: rotateZ(0deg);}
+    to {transform: rotateZ(720deg);}
+}
