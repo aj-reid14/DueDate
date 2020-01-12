@@ -4,6 +4,9 @@ let music = new Audio("assets/audio/theme.wav");
 let musicPlaying = false;
 let platforms = [];
 let shootas = [];
+let shootasInterval;
+let shootasShooting = false;
+let shootasFrequency = 2000;
 let projectiles = [
     "./assets/images/projectiles/projectile_hw.png",
     "./assets/images/projectiles/projectile_project.png"
@@ -13,7 +16,7 @@ let projectiles = [
 $(document).ready(function () {
     CreateComponents();
     ConfigureButtons();
-    ConfigureMusic();
+    // ConfigureMusic();
     GameLoop();
 });
 
@@ -178,6 +181,12 @@ function ConfigureButtons() {
         }
     });
 
+    document.onkeydown = function(event) {
+        if (event.key === "s") {
+            ToggleShootas();
+        }
+    }
+
     $(document).keydown(function (event) {
         keymap[event.key] = true;
     });
@@ -217,14 +226,31 @@ function CreateDaBoom(shoota) {
     });
 }
 
+function ToggleShootas() {
+
+    if (!shootasShooting) {
+        shootasShooting = true;
+        shootasInterval = setInterval(function() {
+
+            let randShoota = Math.floor(Math.random() * shootas.length);
+            randShoota = shootas[randShoota];        
+            CreateDaBoom(randShoota);
+
+        }, shootasFrequency);
+    } else {
+        shootasShooting = false;
+        clearInterval(shootasInterval);
+    }
+}
+
 function CreateProjectile(x, y) {
 
     let randProjectile = Math.floor(Math.random() * projectiles.length);
 
     let projectile = $(`<img class='projectile' src='${projectiles[randProjectile]}'>`);
     projectile.css({
-        width: 35,
-        height: 45,
+        width: 55,
+        height: 65,
         position: "absolute",
         top: y + 10,
         left: x
@@ -235,12 +261,9 @@ function CreateProjectile(x, y) {
     let maxWidth = $("#display")[0].getBoundingClientRect().width - projectile.width() - 6;
 
     projectile.animate({
-        width: 55,
-        height: 65,
-        left: maxWidth,
-        transform: "scaleX(3)"
+        left: maxWidth + 55
     }, {
-        duration: 5000,
+        duration: 6000,
         easing: "linear",
         complete: function () {
             projectile.fadeOut(150, function () {
@@ -259,7 +282,7 @@ function ShootGrade() {
 
         setTimeout(function() {
             player.shooting = false;
-        }, 625);
+        }, 300);
         
         let grade = $("<h2 class='grade'>");
         grade.text("A");
@@ -273,9 +296,7 @@ function ShootGrade() {
             top: player.y - 10,
             left: player.x  + ($(player.element)[0].getBoundingClientRect().width / 2) - 10
         });
-    
-        console.log("Player Width: " + player.width);
-    
+        
         $("#display").append(grade);
     
         grade.fadeIn(150);
@@ -284,6 +305,7 @@ function ShootGrade() {
         }, {
             duration: 1500,
             easing: "linear",
+            step: function() {},
             complete: function() {
                 grade.fadeOut(300, function() {
                     grade.remove();

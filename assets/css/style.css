@@ -33,10 +33,10 @@ body {
 .projectile {
     z-index: 10;
 
-    animation: projectileSpin 5s linear 1 normal forwards;
-    -moz-animation: projectileSpin 5s linear 1 normal forwards;
-    -o-animation: projectileSpin 5s linear 1 normal forwards;
-    -webkit-animation: projectileSpin 5s linear 1 normal forwards;
+    animation: projectileSpin 6.5s linear 1 normal forwards;
+    -moz-animation: projectileSpin 6.5s linear 1 normal forwards;
+    -o-animation: projectileSpin 6.5s linear 1 normal forwards;
+    -webkit-animation: projectileSpin 6.5s linear 1 normal forwards;
 }
 
 .grade {
