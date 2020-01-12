@@ -111,6 +111,7 @@ function component(id, width, height, color, x, y, type) {
         this.element.css({ top: y, left: x });
 
         if (this.id === "player") {
+            this.shooting = false;
             let displayBottom = $("#display")[0].getBoundingClientRect().bottom - 22;
             let playerHeight = 89;
             this.y = displayBottom - playerHeight;
@@ -188,40 +189,6 @@ function ConfigureButtons() {
 
         delete keymap[event.key];
     });
-
-    // document.onkeydown = function (event) {
-    //     switch (event.code) {
-    //         case "ArrowLeft":
-    //             player.src = "./assets/images/laptop/walk_right.gif";
-    //             player.move("left");
-    //             break;
-    //         case "ArrowRight":
-    //             player.src = "./assets/images/laptop/walk_right.gif";
-    //             player.move("right");
-    //             break;
-    //         case "Space":
-    //             let randShoota = Math.floor(Math.random() * shootas.length);
-    //             CreateDaBoom(shootas[randShoota]);
-    //             break;
-    //     }
-
-    //     if (player.element.attr("src") !== player.src) {
-    //         player.element.attr("src", player.src);
-    //     }
-    // }
-
-    // document.onkeyup = function (event) {
-    //     switch (event.code) {
-    //         case "ArrowLeft":
-    //         case "ArrowRight":
-    //             player.src = "./assets/images/laptop/idle.gif";
-    //             break;
-    //     }
-
-    //     if (player.element.attr("src") !== player.src) {
-    //         player.element.attr("src", player.src);
-    //     }
-    // }
 }
 
 function CreateDaBoom(shoota) {
@@ -285,34 +252,45 @@ function CreateProjectile(x, y) {
 }
 
 function ShootGrade() {
-    let grade = $("<h2 class='grade'>");
-    grade.text("A");
-    grade.css({
-        position: "absolute",
-        display: "inline-block",
-        "background-color": "white",
-        border: "1px solid black",
-        color: "green",
-        padding: "2px",
-        top: player.y,
-        left: player.x  + ($(player.element)[0].getBoundingClientRect().width / 2) - 5
-    });
+    
+    if (!player.shooting) {
+        
+        player.shooting = true;
 
-    console.log("Player Width: " + player.width);
-
-    $("#display").append(grade);
-
-    grade.animate({
-        top: -50
-    }, {
-        duration: 1500,
-        easing: "linear",
-        complete: function() {
-            grade.fadeOut(300, function() {
-                grade.remove();
-            });
-        }
-    });
+        setTimeout(function() {
+            player.shooting = false;
+        }, 625);
+        
+        let grade = $("<h2 class='grade'>");
+        grade.text("A");
+        grade.css({
+            position: "absolute",
+            display: "none",
+            "background-color": "white",
+            border: "1px solid black",
+            color: "green",
+            padding: "2px",
+            top: player.y - 10,
+            left: player.x  + ($(player.element)[0].getBoundingClientRect().width / 2) - 10
+        });
+    
+        console.log("Player Width: " + player.width);
+    
+        $("#display").append(grade);
+    
+        grade.fadeIn(150);
+        grade.animate({
+            top: -60
+        }, {
+            duration: 1500,
+            easing: "linear",
+            complete: function() {
+                grade.fadeOut(300, function() {
+                    grade.remove();
+                });
+            }
+        });
+    }
 }
 
 function KillDaBoom(boomID) {

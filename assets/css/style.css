@@ -39,6 +39,14 @@ body {
     -webkit-animation: projectileSpin 5s linear 1 normal forwards;
 }
 
+.grade {
+    animation: gradeTwitch 200ms linear infinite alternate forwards;
+    -moz-animation: gradeTwitch 200ms linear infinite alternate forwards;
+    -o-animation: gradeTwitch 200ms linear infinite alternate forwards;
+    -webkit-animation: gradeTwitch 200ms linear infinite alternate forwards;
+}
+
+/* Projectile Spin Animation */
 @keyframes projectileSpin {
     from {transform: rotateZ(0deg);}
     to {transform: rotateZ(720deg);}
@@ -57,4 +65,25 @@ body {
 @-webkit-keyframes projectileSpin {
     from {transform: rotateZ(0deg);}
     to {transform: rotateZ(720deg);}
+}
+
+/* Grade Twitch Animation */
+@keyframes gradeTwitch {
+    from {transform: rotateZ(-25deg);}
+    to {transform: rotateZ(25deg);}
+}
+
+@-moz-keyframes gradeTwitch {
+    from {transform: rotateZ(-25deg);}
+    to {transform: rotateZ(25deg);}
+}
+
+@-o-keyframes gradeTwitch {
+    from {transform: rotateZ(-25deg);}
+    to {transform: rotateZ(25deg);}
+}
+
+@-webkit-keyframes gradeTwitch {
+    from {transform: rotateZ(-25deg);}
+    to {transform: rotateZ(25deg);}
 }
