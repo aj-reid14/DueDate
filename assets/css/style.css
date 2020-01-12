@@ -17,6 +17,7 @@ body {
     padding: 0;
 
     background-color: #5fb5e7;
+    overflow: hidden;
 }
 
 .platform {

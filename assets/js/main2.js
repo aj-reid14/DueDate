@@ -1,4 +1,5 @@
 let player;
+let keymap = {};
 let music = new Audio("assets/audio/theme.wav");
 let musicPlaying = false;
 let platforms = [];
@@ -12,16 +13,45 @@ let projectiles = [
 $(document).ready(function () {
     CreateComponents();
     ConfigureButtons();
+    ConfigureMusic();
+    GameLoop();
+});
 
+function GameLoop() {
+
+    if (keymap["ArrowLeft"]) {
+        player.src = "./assets/images/laptop/walk_right.gif";
+        player.move("left");
+    }
+
+    if (keymap["ArrowRight"]) {
+        player.src = "./assets/images/laptop/walk_right.gif";
+        player.move("right");
+    }
+
+    if (keymap[" "]) {
+        // let randShoota = Math.floor(Math.random() * shootas.length);
+        // CreateDaBoom(shootas[randShoota]);
+
+        ShootGrade();
+    }
+
+    if (player.element.attr("src") !== player.src) {
+        player.element.attr("src", player.src);
+    }
+
+    setTimeout(GameLoop, 100);
+}
+
+function ConfigureMusic() {
     music.loop = true;
-    music.addEventListener('ended', function() {
+    music.addEventListener('ended', function () {
         musicPlaying = false;
         this.currentTime = 0;
         this.play();
         musicPlaying = true;
     }, false);
-
-})
+}
 
 function CreateComponents() {
 
@@ -31,7 +61,6 @@ function CreateComponents() {
 
     let platformWidth = 150;
     let maxPlatformLeft = $("#display")[0].getBoundingClientRect().left;
-    console.log(maxPlatformLeft);
 
     // Create the Shootas
     let shootaSize = 115;
@@ -40,17 +69,14 @@ function CreateComponents() {
 
     let jonboy = new component("jonboy", shootaSize, shootaSize, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
     jonboy.element.addClass("shoota");
-    console.log(`${jonboy.id} | Top: ${jonboy.element.css("top")} | Left: ${jonboy.element.css("left")}`);
     shootas.push(jonboy);
 
     let derry = new component("derry", shootaSize, shootaSize, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
     derry.element.addClass("shoota");
-    console.log(`${derry.id} | Top: ${derry.element.css("top")} | Left: ${derry.element.css("left")}`);
     shootas.push(derry);
 
     let charlington = new component("charlington", shootaSize, shootaSize, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
     charlington.element.addClass("shoota");
-    console.log(`${charlington.id} | Top: ${charlington.element.css("top")} | Left: ${charlington.element.css("left")}`);
     shootas.push(charlington);
 
     // Create the Platforms
@@ -61,7 +87,6 @@ function CreateComponents() {
         let platform = new component(`platform${i}`, platformWidth, 25, "darkgrey", 0, platformTop, "none");
         platform.element.addClass("platform");
         platforms.push(platform);
-        console.log(`Platform ${i} [width]: ` + $(`#platform${i}`)[0].getBoundingClientRect().width);
 
         platformTop += shootaDistance;
     }
@@ -69,10 +94,13 @@ function CreateComponents() {
 
 function component(id, width, height, color, x, y, type) {
     this.id = id;
+
     this.width = width;
+
     this.height = height;
+
     this.x = x;
-    this.speedX = 4;
+    this.speedX = 6;
     this.y = y;
     this.speedY = 0;
 
@@ -85,14 +113,15 @@ function component(id, width, height, color, x, y, type) {
         if (this.id === "player") {
             let displayBottom = $("#display")[0].getBoundingClientRect().bottom - 22;
             let playerHeight = 89;
-            this.element.css({ margin: "0px", top: displayBottom - playerHeight });
+            this.y = displayBottom - playerHeight;
+            this.element.css({ margin: "0px", top: this.y });
 
             $(window).resize(function () {
                 if ($("#player")[0].getBoundingClientRect().left > $("#display")[0].getBoundingClientRect().right) {
-                    $("#player").css({ left: $("#display")[0].getBoundingClientRect().width - 150});
+                    $("#player").css({ left: $("#display")[0].getBoundingClientRect().width - 150 });
                 }
 
-            })
+            });
         }
 
     } else {
@@ -106,6 +135,7 @@ function component(id, width, height, color, x, y, type) {
     $("#display").append(this.element);
     this.element = $(`#${this.id}`);
 
+
     this.move = function (direction) {
         Move(this.id, direction);
     }
@@ -117,9 +147,10 @@ function Move(id, direction) {
         case "left": {
             let currLeft = parseInt($(`#${id}`).css("left"), 10);
             let maxLeft = platforms[0].width;
+            player.x = Math.floor(currLeft - player.speedX);
 
             if (currLeft > maxLeft) {
-                $(`#${id}`).css("left", currLeft - player.speedX);
+                $(`#${id}`).css("left", player.x);
             }
         }
             break;
@@ -127,9 +158,10 @@ function Move(id, direction) {
             let currLeft = parseInt($(`#${id}`).css("left"), 10);
             let currRight = $(`#${id}`)[0].getBoundingClientRect().right;
             let maxRight = $("#display")[0].getBoundingClientRect().right;
+            player.x = Math.floor(currLeft + player.speedX);
 
             if (currRight < maxRight) {
-                $(`#${id}`).css("left", currLeft + player.speedX);
+                $(`#${id}`).css("left", player.x);
             }
         }
             break;
@@ -138,46 +170,58 @@ function Move(id, direction) {
 
 function ConfigureButtons() {
 
-    $("#display").click(function() {
+    $("#display").click(function () {
         if (!musicPlaying) {
             music.play();
             musicPlaying = true;
         }
     });
 
-    document.onkeydown = function (event) {
-        switch (event.code) {
-            case "ArrowLeft":
-                player.src = "./assets/images/laptop/walk_right.gif";
-                player.move("left");
-                break;
-            case "ArrowRight":
-                player.src = "./assets/images/laptop/walk_right.gif";
-                player.move("right");
-                break;
-            case "Space":
-                let randShoota = Math.floor(Math.random() * shootas.length);
-                CreateDaBoom(shootas[randShoota]);
-                break;
+    $(document).keydown(function (event) {
+        keymap[event.key] = true;
+    });
+
+    $(document).keyup(function (event) {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            player.src = "./assets/images/laptop/idle.gif";
         }
 
-        if (player.element.attr("src") !== player.src) {
-            player.element.attr("src", player.src);
-        }
-    }
+        delete keymap[event.key];
+    });
 
-    document.onkeyup = function (event) {
-        switch (event.code) {
-            case "ArrowLeft":
-            case "ArrowRight":
-                player.src = "./assets/images/laptop/idle.gif";
-                break;
-        }
+    // document.onkeydown = function (event) {
+    //     switch (event.code) {
+    //         case "ArrowLeft":
+    //             player.src = "./assets/images/laptop/walk_right.gif";
+    //             player.move("left");
+    //             break;
+    //         case "ArrowRight":
+    //             player.src = "./assets/images/laptop/walk_right.gif";
+    //             player.move("right");
+    //             break;
+    //         case "Space":
+    //             let randShoota = Math.floor(Math.random() * shootas.length);
+    //             CreateDaBoom(shootas[randShoota]);
+    //             break;
+    //     }
 
-        if (player.element.attr("src") !== player.src) {
-            player.element.attr("src", player.src);
-        }
-    }
+    //     if (player.element.attr("src") !== player.src) {
+    //         player.element.attr("src", player.src);
+    //     }
+    // }
+
+    // document.onkeyup = function (event) {
+    //     switch (event.code) {
+    //         case "ArrowLeft":
+    //         case "ArrowRight":
+    //             player.src = "./assets/images/laptop/idle.gif";
+    //             break;
+    //     }
+
+    //     if (player.element.attr("src") !== player.src) {
+    //         player.element.attr("src", player.src);
+    //     }
+    // }
 }
 
 function CreateDaBoom(shoota) {
@@ -224,18 +268,51 @@ function CreateProjectile(x, y) {
     let maxWidth = $("#display")[0].getBoundingClientRect().width - projectile.width() - 6;
 
     projectile.animate({
+        width: 55,
+        height: 65,
         left: maxWidth,
         transform: "scaleX(3)"
     }, {
         duration: 5000,
         easing: "linear",
-        complete: function() {
-            projectile.fadeOut(150, function() {
+        complete: function () {
+            projectile.fadeOut(150, function () {
                 projectile.remove();
             })
         }
     });
 
+}
+
+function ShootGrade() {
+    let grade = $("<h2 class='grade'>");
+    grade.text("A");
+    grade.css({
+        position: "absolute",
+        display: "inline-block",
+        "background-color": "white",
+        border: "1px solid black",
+        color: "green",
+        padding: "2px",
+        top: player.y,
+        left: player.x  + ($(player.element)[0].getBoundingClientRect().width / 2) - 5
+    });
+
+    console.log("Player Width: " + player.width);
+
+    $("#display").append(grade);
+
+    grade.animate({
+        top: -50
+    }, {
+        duration: 1500,
+        easing: "linear",
+        complete: function() {
+            grade.fadeOut(300, function() {
+                grade.remove();
+            });
+        }
+    });
 }
 
 function KillDaBoom(boomID) {
