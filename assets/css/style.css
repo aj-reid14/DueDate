@@ -43,13 +43,13 @@ img, .platform {
     transform: scaleX(-1);
 }
 
-.projectile {
+.assignment {
     z-index: 10;
 
-    animation: projectileSpin 4.5s linear infinite normal forwards;
-    -moz-animation: projectileSpin 4.5s linear infinite normal forwards;
-    -o-animation: projectileSpin 4.5s linear infinite normal forwards;
-    -webkit-animation: projectileSpin 4.5s linear infinite normal forwards;
+    animation: assignmentSpin 4.5s linear infinite normal forwards;
+    -moz-animation: assignmentSpin 4.5s linear infinite normal forwards;
+    -o-animation: assignmentSpin 4.5s linear infinite normal forwards;
+    -webkit-animation: assignmentSpin 4.5s linear infinite normal forwards;
 }
 
 .grade {
@@ -59,23 +59,23 @@ img, .platform {
     -webkit-animation: gradeTwitch 200ms linear infinite alternate forwards;
 }
 
-/* Projectile Spin Animation */
-@keyframes projectileSpin {
+/* Assignment Spin Animation */
+@keyframes assignmentSpin {
     from {transform: rotateZ(0deg);}
     to {transform: rotateZ(720deg);}
 }
 
-@-moz-keyframes projectileSpin {
+@-moz-keyframes assignmentSpin {
     from {transform: rotateZ(0deg);}
     to {transform: rotateZ(720deg);}
 }
 
-@-o-keyframes projectileSpin {
+@-o-keyframes assignmentSpin {
     from {transform: rotateZ(0deg);}
     to {transform: rotateZ(720deg);}
 }
 
-@-webkit-keyframes projectileSpin {
+@-webkit-keyframes assignmentSpin {
     from {transform: rotateZ(0deg);}
     to {transform: rotateZ(720deg);}
 }

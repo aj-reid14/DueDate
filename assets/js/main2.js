@@ -9,9 +9,9 @@ let shootas = [];
 let shootasInterval;
 let shootasShooting = false;
 let shootasFrequency = 2000;
-let projectileSpeed = 7000;
-let projectilesActive;
-let projectiles = [
+let assignmentSpeed = 7000;
+let assignmentsActive;
+let assignments = [
     "./assets/images/projectiles/projectile_hw.png",
     "./assets/images/projectiles/projectile_project.png"
 ];
@@ -245,7 +245,7 @@ function CreateDaBoom(shoota) {
     shootaSound.play();
 
     $(`#${daBoomID}`).fadeIn(150, function () {
-        CreateProjectile(boomLeft, boomTop);
+        CreateAssignment(boomLeft, boomTop);
         setTimeout(KillDaBoom, 200, daBoomID);
     });
 }
@@ -256,12 +256,12 @@ function KillDaBoom(boomID) {
     });
 }
 
-function CreateProjectile(x, y) {
+function CreateAssignment(x, y) {
 
-    let randProjectile = Math.floor(Math.random() * projectiles.length);
+    let randAssignment = Math.floor(Math.random() * assignments.length);
 
-    let projectile = $(`<img class='projectile' collided='false' src='${projectiles[randProjectile]}'>`);
-    projectile.css({
+    let assignment = $(`<img class='assignment' collided='false' src='${assignments[randAssignment]}'>`);
+    assignment.css({
         width: 50,
         height: 60,
         position: "absolute",
@@ -269,21 +269,21 @@ function CreateProjectile(x, y) {
         left: x
     });
 
-    $("#display").append(projectile);
+    $("#display").append(assignment);
 
-    let maxWidth = $("#display")[0].getBoundingClientRect().width - projectile.width() - 6;
+    let maxWidth = $("#display")[0].getBoundingClientRect().width - assignment.width() - 6;
 
-    projectile.animate({
+    assignment.animate({
         left: maxWidth + 55
     }, {
-        duration: projectileSpeed,
+        duration: assignmentSpeed,
         easing: "linear",
         step: function() {
-            if (projectile.attr("collided") === "true") {projectile.remove();};
+            if (assignment.attr("collided") === "true") {assignment.remove();};
         },
         complete: function () {
-            projectile.fadeOut(150, function () {
-                projectile.remove();
+            assignment.fadeOut(150, function () {
+                assignment.remove();
             });
         }
     });
@@ -322,12 +322,12 @@ function ShootGrade() {
             duration: 1500,
             easing: "linear",
             start: function () {
-                projectilesActive = $(".projectile")
+                assignmentsActive = $(".assignment")
             },
             step: function() {
-                if (projectilesActive.length !== 0) {
-                    for (let i = 0; i < projectilesActive.length; i++) {
-                        if (CheckCollision(grade, projectilesActive[i])) {
+                if (assignmentsActive.length !== 0) {
+                    for (let i = 0; i < assignmentsActive.length; i++) {
+                        if (CheckCollision(grade, assignmentsActive[i])) {
                             break;
                         };
                     }
@@ -345,34 +345,34 @@ function ShootGrade() {
     }
 }
 
-function CheckCollision(grade, projectile) {
+function CheckCollision(grade, assignment) {
 
     let gradeBox = grade[0].getBoundingClientRect();
-    let projectileBox = projectile.getBoundingClientRect();
+    let assignmentBox = assignment.getBoundingClientRect();
 
     let collided = true;
     let gradeActive = $(grade).attr("active");
 
-    if ((gradeBox.bottom < projectileBox.top) ||
-        (gradeBox.top > projectileBox.bottom) ||
-        (gradeBox.right < projectileBox.left) ||
-        (gradeBox.left > projectileBox.right)) { collided = false; }
+    if ((gradeBox.bottom < assignmentBox.top) ||
+        (gradeBox.top > assignmentBox.bottom) ||
+        (gradeBox.right < assignmentBox.left) ||
+        (gradeBox.left > assignmentBox.right)) { collided = false; }
 
         if (collided && gradeActive === "true") {
             $(grade).attr("active", "false");
             submitSound.play();
             grade.remove();
-            $(projectile).attr("collided", "true");
-            CreateHitEffect(gradeBox, projectileBox);
+            $(assignment).attr("collided", "true");
+            CreateHitEffect(gradeBox, assignmentBox);
         }
 
     return collided;
 }
 
-function CreateHitEffect(grade, projectile) {
+function CreateHitEffect(grade, assignment) {
 
-    let x = (grade.right + projectile.left) / 2;
-    let y = ((projectile.top + grade.bottom) / 2);
+    let x = (grade.right + assignment.left) / 2;
+    let y = ((assignment.top + grade.bottom) / 2);
     let effectSize = 100;
     let effectOffset = effectSize + (effectSize * 0.2);
 
