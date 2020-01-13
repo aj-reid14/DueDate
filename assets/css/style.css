@@ -16,6 +16,7 @@ img, .platform {
     width: 90%;
     height: 500px;
     margin: auto;
+    margin-top: 25px;
     border: 3px groove black;
     border-bottom: 15px solid black;
     border-left: 15px solid black;
@@ -35,13 +36,6 @@ img, .platform {
     border: 2px solid black;
     border-left: none;
     background-image: url("../images/concrete.jpg");
-}
-
-.nametag {
-    position: absolute;
-    left: 0;
-    top: 0;
-
 }
 
 .shoota {

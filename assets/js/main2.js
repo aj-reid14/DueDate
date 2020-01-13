@@ -9,7 +9,7 @@ let shootasInterval;
 let shootasShooting = false;
 let shootasFrequency = 2000;
 let projectileSpeed = 7000;
-let projectilesActive = [];
+let projectilesActive;
 let projectiles = [
     "./assets/images/projectiles/projectile_hw.png",
     "./assets/images/projectiles/projectile_project.png"
@@ -62,8 +62,7 @@ function CreateComponents() {
     let playerX = $("#display")[0].getBoundingClientRect().width / 2;
     player = new component("player", "auto", "auto", "./assets/images/laptop/idle.gif", playerX, 0, "image");
 
-    let platformWidth = 150;
-    let maxPlatformLeft = $("#display")[0].getBoundingClientRect().left;
+    let platformWidth = 125;
 
     // Create the Shootas
     let shootaSize = 115;
@@ -83,7 +82,6 @@ function CreateComponents() {
     shootas.push(charlington);
 
     // Create the Platforms
-
     let platformTop = shootaSize;
 
     for (let i = 0; i < 3; i++) {
@@ -118,7 +116,7 @@ function component(id, width, height, color, x, y, type) {
         if (this.id === "player") {
             this.shooting = false;
             this.cooldown = 500;
-            let displayBottom = $("#display")[0].getBoundingClientRect().bottom - 22;
+            let displayBottom = $("#display")[0].getBoundingClientRect().bottom - parseInt($("#display").css("margin-top"), 10) - 10;
             let playerHeight = 89;
             this.y = displayBottom - playerHeight;
             this.element.css({ margin: "0px", top: this.y });
@@ -261,7 +259,7 @@ function CreateProjectile(x, y) {
 
     let randProjectile = Math.floor(Math.random() * projectiles.length);
 
-    let projectile = $(`<img class='projectile' src='${projectiles[randProjectile]}'>`);
+    let projectile = $(`<img class='projectile' collided='false' src='${projectiles[randProjectile]}'>`);
     projectile.css({
         width: 50,
         height: 60,
@@ -271,7 +269,6 @@ function CreateProjectile(x, y) {
     });
 
     $("#display").append(projectile);
-    projectilesActive.push(projectile);
 
     let maxWidth = $("#display")[0].getBoundingClientRect().width - projectile.width() - 6;
 
@@ -280,6 +277,9 @@ function CreateProjectile(x, y) {
     }, {
         duration: projectileSpeed,
         easing: "linear",
+        step: function() {
+            if (projectile.attr("collided") === "true") {projectile.remove();};
+        },
         complete: function () {
             projectile.fadeOut(150, function () {
                 projectile.remove();
@@ -298,7 +298,7 @@ function ShootGrade() {
         setTimeout(function() {
             player.shooting = false;
         }, player.cooldown);
-        
+      
         let grade = $("<h2 class='grade'>");
         grade.text("A");
         grade.css({
@@ -320,6 +320,9 @@ function ShootGrade() {
         }, {
             duration: 1500,
             easing: "linear",
+            start: function () {
+                projectilesActive = $(".projectile")
+            },
             step: function() {
                 if (projectilesActive.length !== 0) {
                     for (let i = 0; i < projectilesActive.length; i++) {
@@ -330,7 +333,7 @@ function ShootGrade() {
                 }
             },
             complete: function() {
-                grade.fadeOut(300, function() {
+                grade.fadeOut(1000, function() {
                     grade.remove();
                 });
             }
@@ -339,8 +342,9 @@ function ShootGrade() {
 }
 
 function CheckCollision(grade, projectile) {
+
     let box1 = grade[0].getBoundingClientRect();
-    let box2 = projectile[0].getBoundingClientRect();
+    let box2 = projectile.getBoundingClientRect();
 
     let collided = true;
 
@@ -350,8 +354,8 @@ function CheckCollision(grade, projectile) {
         (box1.left > box2.right)) { collided = false; }
 
         if (collided) {
-            grade.stop(false, true);
-            projectile.stop(false, true);
+            grade.remove();
+            $(projectile).attr("collided", "true");
         }
 
     return collided;
