@@ -2,6 +2,7 @@ let player;
 let keymap = {};
 let music = new Audio("assets/audio/theme.wav");
 let shootaSound = new Audio("assets/audio/shot_fired.wav");
+let submitSound = new Audio("assets/audio/submit_sound.wav");
 let musicPlaying = false;
 let platforms = [];
 let shootas = [];
@@ -299,7 +300,7 @@ function ShootGrade() {
             player.shooting = false;
         }, player.cooldown);
       
-        let grade = $("<h2 class='grade'>");
+        let grade = $("<h2 active='true' class='grade'>");
         grade.text("A");
         grade.css({
             position: "absolute",
@@ -333,6 +334,9 @@ function ShootGrade() {
                 }
             },
             complete: function() {
+                submitSound.pause();
+                submitSound.currentTime = 0;
+
                 grade.fadeOut(1000, function() {
                     grade.remove();
                 });
@@ -343,20 +347,51 @@ function ShootGrade() {
 
 function CheckCollision(grade, projectile) {
 
-    let box1 = grade[0].getBoundingClientRect();
-    let box2 = projectile.getBoundingClientRect();
+    let gradeBox = grade[0].getBoundingClientRect();
+    let projectileBox = projectile.getBoundingClientRect();
 
     let collided = true;
+    let gradeActive = $(grade).attr("active");
 
-    if ((box1.bottom < box2.top) ||
-        (box1.top > box2.bottom) ||
-        (box1.right < box2.left) ||
-        (box1.left > box2.right)) { collided = false; }
+    if ((gradeBox.bottom < projectileBox.top) ||
+        (gradeBox.top > projectileBox.bottom) ||
+        (gradeBox.right < projectileBox.left) ||
+        (gradeBox.left > projectileBox.right)) { collided = false; }
 
-        if (collided) {
+        if (collided && gradeActive === "true") {
+            $(grade).attr("active", "false");
+            submitSound.play();
             grade.remove();
             $(projectile).attr("collided", "true");
+            CreateHitEffect(gradeBox, projectileBox);
         }
 
     return collided;
+}
+
+function CreateHitEffect(grade, projectile) {
+
+    let x = (grade.right + projectile.left) / 2;
+    let y = ((projectile.top + grade.bottom) / 2);
+    let effectSize = 100;
+    let effectOffset = effectSize + (effectSize * 0.2);
+
+    let hitEffect = $("<img src='./assets/images/hit_boom.gif'>");
+
+    hitEffect.css({
+        position: "absolute",
+        "z-index": 15,
+        top: (y - effectOffset) + (effectSize * 0.25),
+        left: x - effectOffset,
+        width: effectOffset,
+        height: effectOffset
+    });
+
+    $("#display").append(hitEffect);
+
+    setTimeout(function() {
+        hitEffect.fadeOut(350, function() {
+            hitEffect.remove();
+        });
+    }, 150);
 }
