@@ -9,6 +9,7 @@ let shootasInterval;
 let shootasShooting = false;
 let shootasFrequency = 2000;
 let projectileSpeed = 7000;
+let projectilesActive = [];
 let projectiles = [
     "./assets/images/projectiles/projectile_hw.png",
     "./assets/images/projectiles/projectile_project.png"
@@ -204,6 +205,23 @@ function ConfigureButtons() {
     });
 }
 
+function ToggleShootas() {
+
+    if (!shootasShooting) {
+        shootasShooting = true;
+        shootasInterval = setInterval(function() {
+
+            let randShoota = Math.floor(Math.random() * shootas.length);
+            randShoota = shootas[randShoota];        
+            CreateDaBoom(randShoota);
+
+        }, shootasFrequency);
+    } else {
+        shootasShooting = false;
+        clearInterval(shootasInterval);
+    }
+}
+
 function CreateDaBoom(shoota) {
 
     let boomTop = shoota.y + (shoota.height * 0.35);
@@ -232,21 +250,10 @@ function CreateDaBoom(shoota) {
     });
 }
 
-function ToggleShootas() {
-
-    if (!shootasShooting) {
-        shootasShooting = true;
-        shootasInterval = setInterval(function() {
-
-            let randShoota = Math.floor(Math.random() * shootas.length);
-            randShoota = shootas[randShoota];        
-            CreateDaBoom(randShoota);
-
-        }, shootasFrequency);
-    } else {
-        shootasShooting = false;
-        clearInterval(shootasInterval);
-    }
+function KillDaBoom(boomID) {
+    $(`#${boomID}`).fadeOut(150, function () {
+        $(`#${boomID}`).remove();
+    });
 }
 
 function CreateProjectile(x, y) {
@@ -263,6 +270,7 @@ function CreateProjectile(x, y) {
     });
 
     $("#display").append(projectile);
+    projectilesActive.push(projectile);
 
     let maxWidth = $("#display")[0].getBoundingClientRect().width - projectile.width() - 6;
 
@@ -274,6 +282,7 @@ function CreateProjectile(x, y) {
         complete: function () {
             projectile.fadeOut(150, function () {
                 projectile.remove();
+                projectilesActive.shift();
             });
         }
     });
@@ -311,7 +320,15 @@ function ShootGrade() {
         }, {
             duration: 1500,
             easing: "linear",
-            step: function() {},
+            step: function() {
+                if (projectilesActive.length !== 0) {
+                    for (let i = 0; i < projectilesActive.length; i++) {
+                        if (CheckCollision(grade, projectilesActive[i])) {
+                            break;
+                        };
+                    }
+                }
+            },
             complete: function() {
                 grade.fadeOut(300, function() {
                     grade.remove();
@@ -321,8 +338,21 @@ function ShootGrade() {
     }
 }
 
-function KillDaBoom(boomID) {
-    $(`#${boomID}`).fadeOut(150, function () {
-        $(`#${boomID}`).remove();
-    });
+function CheckCollision(grade, projectile) {
+    let box1 = grade[0].getBoundingClientRect();
+    let box2 = projectile[0].getBoundingClientRect();
+
+    let collided = true;
+
+    if ((box1.bottom < box2.top) ||
+        (box1.top > box2.bottom) ||
+        (box1.right < box2.left) ||
+        (box1.left > box2.right)) { collided = false; }
+
+        if (collided) {
+            grade.stop(false, true);
+            projectile.stop(false, true);
+        }
+
+    return collided;
 }
