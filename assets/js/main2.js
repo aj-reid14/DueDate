@@ -1,6 +1,7 @@
 let player;
 let keymap = {};
 let music = new Audio("assets/audio/theme.wav");
+let shootaSound = new Audio("assets/audio/shot_fired.wav");
 let musicPlaying = false;
 let platforms = [];
 let shootas = [];
@@ -172,7 +173,7 @@ function Move(id, direction) {
     }
 }
 
-function ConfigureButtons() {
+function ConfigureMusic() {
 
     $("#display").click(function () {
         if (!musicPlaying) {
@@ -180,6 +181,9 @@ function ConfigureButtons() {
             musicPlaying = true;
         }
     });
+}
+
+function ConfigureButtons() {
 
     document.onkeydown = function(event) {
         if (event.key === "s") {
@@ -220,6 +224,8 @@ function CreateDaBoom(shoota) {
 
     $("#display").append(daBoom);
 
+    shootaSound.play();
+
     $(`#${daBoomID}`).fadeIn(150, function () {
         CreateProjectile(boomLeft, boomTop);
         setTimeout(KillDaBoom, 200, daBoomID);
@@ -249,10 +255,10 @@ function CreateProjectile(x, y) {
 
     let projectile = $(`<img class='projectile' src='${projectiles[randProjectile]}'>`);
     projectile.css({
-        width: 55,
-        height: 65,
+        width: 50,
+        height: 60,
         position: "absolute",
-        top: y + 10,
+        top: y + 12,
         left: x
     });
 
