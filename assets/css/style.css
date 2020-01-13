@@ -24,15 +24,24 @@ img, .platform {
 
     background: url("../images/background5.gif") no-repeat;
     background-position: center;
-    background-size: 115% 100%;
+    background-size: 115% 125%;
     overflow: hidden;
 }
 
 .platform {
     text-align: center;
+    font-weight: 900;
     line-height: 25px;
-    border: 1px solid black;
+    border: 2px solid black;
+    border-left: none;
     background-image: url("../images/concrete.jpg");
+}
+
+.nametag {
+    position: absolute;
+    left: 0;
+    top: 0;
+
 }
 
 .shoota {

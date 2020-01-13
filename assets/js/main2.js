@@ -31,7 +31,7 @@ function GameLoop() {
     }
 
     if (keymap["ArrowRight"]) {
-        player.src = "./assets/images/laptop/walk_right.gif";
+        player.src = "./assets/images/laptop/walk_left.gif";
         player.move("right");
     }
 
@@ -89,7 +89,8 @@ function CreateComponents() {
     for (let i = 0; i < 3; i++) {
         let platform = new component(`platform${i}`, platformWidth, 25, "darkgrey", 0, platformTop, "none");
         platform.element.addClass("platform");
-        platform.element.text(`"[${shootas[i].id}]"`);
+        platform.element.text(`[${shootas[i].id}]`);
+
         platforms.push(platform);
 
         platformTop += shootaDistance;
@@ -282,7 +283,6 @@ function CreateProjectile(x, y) {
         complete: function () {
             projectile.fadeOut(150, function () {
                 projectile.remove();
-                projectilesActive.shift();
             });
         }
     });
