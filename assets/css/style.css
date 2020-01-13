@@ -3,6 +3,10 @@ body {
     background-color: rgb(216, 253, 213);
 }
 
+img, .platform {
+    user-select: none;
+}
+
 #title {
     text-align: center;
 }
@@ -12,15 +16,21 @@ body {
     width: 90%;
     height: 500px;
     margin: auto;
-    border: 3px groove darkblue;
+    border: 3px groove black;
     border-bottom: 15px solid black;
+    border-left: 15px solid black;
+    border-right: 15px solid black;
     padding: 0;
 
-    background-color: #5fb5e7;
+    background: url("../images/background5.gif") no-repeat;
+    background-position: center;
+    background-size: 115% 100%;
     overflow: hidden;
 }
 
 .platform {
+    text-align: center;
+    line-height: 25px;
     border: 1px solid black;
     background-image: url("../images/concrete.jpg");
 }
@@ -33,10 +43,10 @@ body {
 .projectile {
     z-index: 10;
 
-    animation: projectileSpin 6.5s linear 1 normal forwards;
-    -moz-animation: projectileSpin 6.5s linear 1 normal forwards;
-    -o-animation: projectileSpin 6.5s linear 1 normal forwards;
-    -webkit-animation: projectileSpin 6.5s linear 1 normal forwards;
+    animation: projectileSpin 4.5s linear infinite normal forwards;
+    -moz-animation: projectileSpin 4.5s linear infinite normal forwards;
+    -o-animation: projectileSpin 4.5s linear infinite normal forwards;
+    -webkit-animation: projectileSpin 4.5s linear infinite normal forwards;
 }
 
 .grade {

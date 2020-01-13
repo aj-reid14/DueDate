@@ -8,6 +8,7 @@ let shootas = [];
 let shootasInterval;
 let shootasShooting = false;
 let shootasFrequency = 2000;
+let projectileSpeed = 7000;
 let projectiles = [
     "./assets/images/projectiles/projectile_hw.png",
     "./assets/images/projectiles/projectile_project.png"
@@ -34,9 +35,6 @@ function GameLoop() {
     }
 
     if (keymap[" "]) {
-        // let randShoota = Math.floor(Math.random() * shootas.length);
-        // CreateDaBoom(shootas[randShoota]);
-
         ShootGrade();
     }
 
@@ -44,7 +42,7 @@ function GameLoop() {
         player.element.attr("src", player.src);
     }
 
-    setTimeout(GameLoop, 100);
+    setTimeout(GameLoop, 20);
 }
 
 function ConfigureMusic() {
@@ -71,15 +69,15 @@ function CreateComponents() {
     let shootaDistance = 130;
     let shootaLeft = 25;
 
-    let jonboy = new component("jonboy", shootaSize, shootaSize, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
+    let jonboy = new component("jonathan", shootaSize, shootaSize, "./assets/images/shootas/jonboy/idle.gif", shootaLeft, 0, "image");
     jonboy.element.addClass("shoota");
     shootas.push(jonboy);
 
-    let derry = new component("derry", shootaSize, shootaSize, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
+    let derry = new component("darian", shootaSize, shootaSize, "./assets/images/shootas/derry/idle.gif", shootaLeft, 0 + shootaDistance, "image");
     derry.element.addClass("shoota");
     shootas.push(derry);
 
-    let charlington = new component("charlington", shootaSize, shootaSize, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
+    let charlington = new component("charlie", shootaSize, shootaSize, "./assets/images/shootas/charlington/idle.gif", shootaLeft, 0 + (shootaDistance * 2), "image");
     charlington.element.addClass("shoota");
     shootas.push(charlington);
 
@@ -90,6 +88,7 @@ function CreateComponents() {
     for (let i = 0; i < 3; i++) {
         let platform = new component(`platform${i}`, platformWidth, 25, "darkgrey", 0, platformTop, "none");
         platform.element.addClass("platform");
+        platform.element.text(`"[${shootas[i].id}]"`);
         platforms.push(platform);
 
         platformTop += shootaDistance;
@@ -104,18 +103,19 @@ function component(id, width, height, color, x, y, type) {
     this.height = height;
 
     this.x = x;
-    this.speedX = 6;
+    this.speedX = 5;
     this.y = y;
     this.speedY = 0;
 
     if (type === "image") {
         this.src = color;
-        this.element = $(`<img id='${this.id}' src='${this.src}'>`);
+        this.element = $(`<img id='${this.id}' src='${this.src}' draggable='false'>`);
         this.element.css({ position: "absolute", width: this.width, height: this.height });
         this.element.css({ top: y, left: x });
 
         if (this.id === "player") {
             this.shooting = false;
+            this.cooldown = 500;
             let displayBottom = $("#display")[0].getBoundingClientRect().bottom - 22;
             let playerHeight = 89;
             this.y = displayBottom - playerHeight;
@@ -269,12 +269,12 @@ function CreateProjectile(x, y) {
     projectile.animate({
         left: maxWidth + 55
     }, {
-        duration: 6000,
+        duration: projectileSpeed,
         easing: "linear",
         complete: function () {
             projectile.fadeOut(150, function () {
                 projectile.remove();
-            })
+            });
         }
     });
 
@@ -288,7 +288,7 @@ function ShootGrade() {
 
         setTimeout(function() {
             player.shooting = false;
-        }, 300);
+        }, player.cooldown);
         
         let grade = $("<h2 class='grade'>");
         grade.text("A");
