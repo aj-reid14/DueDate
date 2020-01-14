@@ -1,14 +1,38 @@
 body {
     font-family: 'ZCOOL KuaiLe', cursive;
     background-color: rgb(216, 253, 213);
+    text-align: center;
 }
 
-img, .platform {
+img, .platform, #title {
     user-select: none;
 }
 
 #title {
+    position: absolute;
+    z-index: 30;
+    margin: 10px auto;
+    width: 200px;
+    height: auto;
     text-align: center;
+    background-color: white;
+    border: 4px groove gray;
+    animation: titleTwitch 3s linear infinite alternate forwards;
+}
+
+#title:hover {
+    animation: titleColor 2s linear infinite alternate forwards;
+}
+
+#gameInfo {
+    text-align: center;
+    display: inline-block;
+    margin-top: 5px;
+    padding: 0;
+}
+
+.controls {
+    color: darkred;
 }
 
 #display {
@@ -99,4 +123,46 @@ img, .platform {
 @-webkit-keyframes gradeTwitch {
     from {transform: rotateZ(-25deg);}
     to {transform: rotateZ(25deg);}
+}
+
+/* Title Twitch Animation */
+@keyframes titleTwitch {
+    from {transform: rotateZ(-2.5deg);}
+    to {transform: rotateZ(2.5deg);}
+}
+
+@-moz-keyframes titleTwitch {
+    from {transform: rotateZ(-2.5deg);}
+    to {transform: rotateZ(2.5deg);}
+}
+
+@-o-keyframes titleTwitch {
+    from {transform: rotateZ(-2.5deg);}
+    to {transform: rotateZ(2.5deg);}
+}
+
+@-webkit-keyframes titleTwitch {
+    from {transform: rotateZ(-2.5deg);}
+    to {transform: rotateZ(2.5deg);}
+}
+
+/* Title Color Animation */
+@keyframes titleColor {
+    from {background-color: whitesmoke;}
+    to {background-color: rgb(169, 245, 245);}
+}
+
+@-moz-keyframes titleColor {
+    from {background-color: whitesmoke;}
+    to {background-color: rgb(169, 245, 245);}
+}
+
+@-o-keyframes titleColor {
+    from {background-color: whitesmoke;}
+    to {background-color: rgb(169, 245, 245);}
+}
+
+@-webkit-keyframes titleColor {
+    from {background-color: whitesmoke;}
+    to {background-color: rgb(169, 245, 245);}
 }

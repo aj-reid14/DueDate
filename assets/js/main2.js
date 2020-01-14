@@ -1,3 +1,6 @@
+let gameStarted = false;
+let display = $("#display")[0].getBoundingClientRect();
+
 let player;
 let keymap = {};
 let music = new Audio("assets/audio/theme.wav");
@@ -18,11 +21,32 @@ let assignments = [
 
 
 $(document).ready(function () {
+    StartScreen();
     CreateComponents();
     ConfigureButtons();
     // ConfigureMusic();
     GameLoop();
 });
+
+function StartScreen() {
+
+    $("#title").css({
+        position: "absolute",
+        top: display.height / 2,
+        left: (display.width / 2) - 25
+    });
+
+    let door = $("<div id='door'>");
+    door.css({
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        "background-color": "black",
+        "z-index": 25
+    });
+
+    $("#display").append(door);
+}
 
 function GameLoop() {
 
@@ -60,7 +84,7 @@ function ConfigureMusic() {
 function CreateComponents() {
 
     // Static Box (Red)
-    let playerX = $("#display")[0].getBoundingClientRect().width / 2;
+    let playerX = display.width / 2;
     player = new component("player", "auto", "auto", "./assets/images/laptop/idle.gif", playerX, 0, "image");
 
     let platformWidth = 125;
@@ -117,14 +141,14 @@ function component(id, width, height, color, x, y, type) {
         if (this.id === "player") {
             this.shooting = false;
             this.cooldown = 500;
-            let displayBottom = $("#display")[0].getBoundingClientRect().bottom - parseInt($("#display").css("margin-top"), 10) - 10;
+            let displayBottom = display.bottom - parseInt($("#display").css("margin-top"), 10) - 10;
             let playerHeight = 89;
             this.y = displayBottom - playerHeight;
             this.element.css({ margin: "0px", top: this.y });
 
             $(window).resize(function () {
-                if ($("#player")[0].getBoundingClientRect().left > $("#display")[0].getBoundingClientRect().right) {
-                    $("#player").css({ left: $("#display")[0].getBoundingClientRect().width - 150 });
+                if ($("#player")[0].getBoundingClientRect().left > display.right) {
+                    $("#player").css({ left: display.width - 150 });
                 }
 
             });
@@ -163,7 +187,7 @@ function Move(id, direction) {
         case "right": {
             let currLeft = parseInt($(`#${id}`).css("left"), 10);
             let currRight = $(`#${id}`)[0].getBoundingClientRect().right;
-            let maxRight = $("#display")[0].getBoundingClientRect().right;
+            let maxRight = display.right;
             player.x = Math.floor(currLeft + player.speedX);
 
             if (currRight < maxRight) {
@@ -202,6 +226,31 @@ function ConfigureButtons() {
         }
 
         delete keymap[event.key];
+    });
+
+    $("#title").click(function() {
+        if (!gameStarted) {
+            gameStarted = true;
+
+            let doorHeight = $("#door")[0].getBoundingClientRect().height;
+
+            $("#door").animate({
+                top: 0 - doorHeight
+            }, {
+                duration: 2500,
+                easing: "linear"
+            });
+
+            let newTitleY = $("#gameInfo")[0].getBoundingClientRect().bottom;
+
+            $(this).animate({
+                top: newTitleY                
+            }, {
+                duration: 2500,
+                easing: "linear"
+            });
+            
+        }
     });
 }
 
@@ -271,7 +320,7 @@ function CreateAssignment(x, y) {
 
     $("#display").append(assignment);
 
-    let maxWidth = $("#display")[0].getBoundingClientRect().width - assignment.width() - 6;
+    let maxWidth = display.width - assignment.width() - 6;
 
     assignment.animate({
         left: maxWidth + 55
