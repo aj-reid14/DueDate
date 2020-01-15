@@ -1,5 +1,6 @@
 let gameStarted = false;
 let display = $("#display")[0].getBoundingClientRect();
+let currentGrade = $("#currentGrade").text();
 
 let player;
 let keymap = {};
@@ -155,6 +156,7 @@ function component(id, width, height, color, x, y, type) {
         if (this.id === "player") {
             this.shooting = false;
             this.cooldown = 500;
+            this.score = 0;
             let displayBottom = display.bottom - parseInt($("#display").css("margin-top"), 10) - 10;
             let playerHeight = 89;
             this.y = displayBottom - playerHeight;
@@ -447,6 +449,7 @@ function CheckCollision(grade, assignment) {
         (gradeBox.left > assignmentBox.right)) { collided = false; }
 
     if (collided && gradeActive === "true") {
+        UpdateScore();
         $(grade).attr("active", "false");
         submitSound.play();
         grade.remove();
@@ -455,6 +458,10 @@ function CheckCollision(grade, assignment) {
     }
 
     return collided;
+}
+
+function UpdateScore() {
+    
 }
 
 function CreateHitEffect(grade, assignment) {

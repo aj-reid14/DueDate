@@ -4,7 +4,7 @@ body {
     text-align: center;
 }
 
-img, .platform, #title {
+img, .platform, #title, #scoreInfo, #gameInfo {
     user-select: none;
 }
 
@@ -31,8 +31,14 @@ img, .platform, #title {
     padding: 0;
 }
 
-.controls {
+.controls, #score {
     color: darkred;
+}
+
+#scoreInfo {
+    position: absolute;
+    top: 550px;
+    left: 5%;
 }
 
 #display {
@@ -51,7 +57,19 @@ img, .platform, #title {
     overflow: hidden;
 }
 
-#gradeDisplay {
+#nextGradeArea {
+    position: absolute;
+    z-index: 9;
+    top: 0;
+    left: 0;
+    width: 125px;
+    height: 100%;
+    background-color: blue;
+    opacity: 70%;
+    border-right: 2px solid black;
+}
+
+#currentGradeArea {
     position: absolute;
     z-index: 10;
     top: 0;
@@ -59,8 +77,24 @@ img, .platform, #title {
     width: 125px;
     height: 100%;
     background-color: green;
-    opacity: 70%;
     border-right: 2px solid black;
+}
+
+#gradeDisplay {
+    display: inline-block;
+    position: absolute;
+    top: 400px;
+    left: 0;
+}
+
+#gradeDisplay h4 {
+    margin-bottom: 2px;
+}
+
+#gradeDisplay h1 {
+    margin: 0;
+    color: white;
+    text-decoration: underline;
 }
 
 .platform {
