@@ -51,6 +51,18 @@ img, .platform, #title {
     overflow: hidden;
 }
 
+#gradeDisplay {
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    width: 125px;
+    height: 100%;
+    background-color: green;
+    opacity: 70%;
+    border-right: 2px solid black;
+}
+
 .platform {
     text-align: center;
     font-weight: 900;

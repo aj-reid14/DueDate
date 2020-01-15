@@ -326,7 +326,7 @@ function CreateAssignment(x, y) {
 
     let randAssignment = Math.floor(Math.random() * assignments.length);
 
-    let assignment = $(`<img class='assignment' collided='false' src='${assignments[randAssignment]}'>`);
+    let assignment = $(`<img class='assignment' collided='false' late='false' src='${assignments[randAssignment]}'>`);
     assignment.css({
         width: 50,
         height: 60,
@@ -345,29 +345,34 @@ function CreateAssignment(x, y) {
         duration: assignmentSpeed,
         easing: "linear",
         step: function () {
-            if (assignment.attr("collided") === "true") { assignment.remove(); };
+            if (assignment.attr("collided") === "true") {
+                assignment.stop();
+                assignment.remove(); 
+            };
         },
         complete: function () {
-            console.log("done");
+            assignment.attr("late", "true");
 
-            assignment.animate({
-                top: display.bottom - 80
-            }, {
-                start: function() {
-                    let randSound = Math.floor(Math.random() * lateSounds.length);
-                    lateSound.pause();
-                    lateSound.currentTime = 0;
-                    lateSound.src = lateSounds[randSound];
-                },
-                duration: assignmentSpeed * 0.15,
-                easing: "linear",
-                complete: function () {
-                    lateSound.play();
-                    assignment.fadeOut(50, function () {
-                        assignment.remove();
-                    });
-                }
-            });
+            if (assignment.attr("late", "true")) {
+                assignment.animate({
+                    top: display.bottom - 80
+                }, {
+                    start: function () {
+                        let randSound = Math.floor(Math.random() * lateSounds.length);
+                        lateSound.pause();
+                        lateSound.currentTime = 0;
+                        lateSound.src = lateSounds[randSound];
+                    },
+                    duration: assignmentSpeed * 0.15,
+                    easing: "linear",
+                    complete: function () {
+                        lateSound.play();
+                        assignment.fadeOut(50, function () {
+                            assignment.remove();
+                        });
+                    }
+                });
+            }
         }
     });
 
