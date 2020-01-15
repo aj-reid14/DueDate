@@ -1,6 +1,8 @@
 let gameStarted = false;
 let display = $("#display")[0].getBoundingClientRect();
-let currentGrade = $("#currentGrade").text();
+let grades = ["A", "B", "C", "D", "F"];
+let currentGrade = {};
+let assignmentsMissed = 0;
 
 let player;
 let keymap = {};
@@ -247,7 +249,11 @@ function ConfigureButtons() {
     $("#title").click(function () {
         if (!gameStarted) {
             gameStarted = true;
-
+            currentGrade.index = 0;
+            currentGrade.grade = grades[currentGrade.index];
+            $("#currentGrade").text(currentGrade.grade);
+            $("#nextGradeArea").css("background-color", GetGradeColor(grades[currentGrade.index + 1]));
+            
             // ConfigureMusic();
             CreateComponents();
             GameLoop();
@@ -275,18 +281,21 @@ function ConfigureButtons() {
 
 function ToggleShootas() {
 
-    if (!shootasShooting) {
-        shootasShooting = true;
-        shootasInterval = setInterval(function () {
+    if (gameStarted) {
 
-            let randShoota = Math.floor(Math.random() * shootas.length);
-            randShoota = shootas[randShoota];
-            CreateDaBoom(randShoota);
+        if (!shootasShooting) {
+            shootasShooting = true;
+            shootasInterval = setInterval(function () {
 
-        }, shootasFrequency);
-    } else {
-        shootasShooting = false;
-        clearInterval(shootasInterval);
+                let randShoota = Math.floor(Math.random() * shootas.length);
+                randShoota = shootas[randShoota];
+                CreateDaBoom(randShoota);
+
+            }, shootasFrequency);
+        } else {
+            shootasShooting = false;
+            clearInterval(shootasInterval);
+        }
     }
 }
 
@@ -349,7 +358,7 @@ function CreateAssignment(x, y) {
         step: function () {
             if (assignment.attr("collided") === "true") {
                 assignment.stop();
-                assignment.remove(); 
+                assignment.remove();
             };
         },
         complete: function () {
@@ -368,6 +377,8 @@ function CreateAssignment(x, y) {
                     duration: assignmentSpeed * 0.15,
                     easing: "linear",
                     complete: function () {
+                        assignmentsMissed++;
+                        UpdateGrade();
                         lateSound.play();
                         assignment.fadeOut(50, function () {
                             assignment.remove();
@@ -461,7 +472,105 @@ function CheckCollision(grade, assignment) {
 }
 
 function UpdateScore() {
-    
+    switch (currentGrade.grade) {
+        case "A":
+            player.score += 100;
+            break;
+        case "B":
+            player.score += 80;
+            break;
+        case "C":
+            player.score += 70;
+            break;
+        case "D":
+            player.score += 60;
+            break;
+        case "F":
+            player.score += 50;
+            break;
+    }
+
+    $("#score").text(player.score);
+
+}
+
+function UpdateGrade() {
+    switch (assignmentsMissed) {
+        case 0:
+            $("#currentGradeArea").css({
+                "background-color": GetGradeColor(currentGrade.grade),
+                height: "100%",
+                top: 0
+            });
+            break;
+        case 1:
+            $("#currentGradeArea").css({
+                height: "80%",
+                top: "20%"
+            });
+            break;
+        case 2:
+            $("#currentGradeArea").css({
+                height: "60%",
+                top: "40%"
+            });
+            break;
+        case 3:
+            $("#currentGradeArea").css({
+                height: "40%",
+                top: "60%"
+            });
+            break;
+        case 4:
+            $("#currentGradeArea").css({
+                height: "20%",
+                top: "80%"
+            });
+            break;
+        case 5:
+
+            assignmentsMissed = 0;
+            currentGrade.grade = grades[++currentGrade.index];
+            if (currentGrade.grade === "F") {
+                ToggleShootas();
+            }    
+            
+            $("#currentGrade").text(currentGrade.grade);
+            $("#currentGradeArea").css({
+                "background-color": GetGradeColor(currentGrade.grade),
+                height: "100%",
+                top: 0
+            });
+
+            if (currentGrade.index < (grades.length - 1)) {
+                $("#nextGradeArea").css("background-color", GetGradeColor(grades[currentGrade.index + 1]));
+            }
+            break;
+    }
+}
+
+function GetGradeColor(grade) {
+    let gradeColor = "white";
+
+    switch (grade) {
+        case "A":
+            gradeColor = "green";
+            break;
+        case "B":
+            gradeColor = "blue";
+            break;
+        case "C":
+            gradeColor = "yellow";
+            break;
+        case "D":
+            gradeColor = "orange";
+            break;
+        case "F":
+            gradeColor = "red";
+            break;
+    }
+
+    return gradeColor;
 }
 
 function CreateHitEffect(grade, assignment) {
