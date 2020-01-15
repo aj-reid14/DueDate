@@ -67,25 +67,28 @@ function StartScreen() {
 
 function GameLoop() {
 
-    if (keymap["ArrowLeft"]) {
-        player.src = "./assets/images/laptop/walk_right.gif";
-        player.move("left");
-    }
+    if (gameActive) {
 
-    if (keymap["ArrowRight"]) {
-        player.src = "./assets/images/laptop/walk_left.gif";
-        player.move("right");
-    }
+        if (keymap["ArrowLeft"]) {
+            player.src = "./assets/images/laptop/walk_right.gif";
+            player.move("left");
+        }
 
-    if (keymap[" "]) {
-        ShootGrade();
-    }
+        if (keymap["ArrowRight"]) {
+            player.src = "./assets/images/laptop/walk_left.gif";
+            player.move("right");
+        }
 
-    if (player.element.attr("src") !== player.src) {
-        player.element.attr("src", player.src);
-    }
+        if (keymap[" "]) {
+            ShootGrade();
+        }
 
-    setTimeout(GameLoop, 20);
+        if (player.element.attr("src") !== player.src) {
+            player.element.attr("src", player.src);
+        }
+
+        setTimeout(GameLoop, 20);
+    }
 }
 
 function GameOver() {
@@ -96,6 +99,24 @@ function GameOver() {
 
     assignmentSpeed = 7000;
     shootasFrequency = 2000;
+
+    $("#door").animate({
+        top: 0
+    }, {
+        duration: 2500,
+        easing: "linear",
+        complete: function() {
+            let gameOverMsg = $("<h1 class='bigMsg'>");
+            gameOverMsg.css({
+                display: "none",
+                top: display.height / 2,
+                left: (display.width / 2) - 250
+            })
+            gameOverMsg.text(`FLUNKED OUT || Final Score: ${$("#score").text()}`);
+            $("#display").append(gameOverMsg);
+            gameOverMsg.fadeIn(300);
+        }
+    });
 }
 
 function ConfigureMusic() {
@@ -170,7 +191,7 @@ function component(id, width, height, color, x, y, type) {
 
         if (this.id === "player") {
             this.shooting = false;
-            this.cooldown = 500;
+            this.cooldown = 400;
             this.score = 0;
             let displayBottom = display.bottom - parseInt($("#display").css("margin-top"), 10) - 10;
             let playerHeight = 89;
@@ -250,7 +271,7 @@ function ConfigureButtons() {
             $("#nextGradeArea").css("background-color", GetGradeColor(grades[currentGrade.index + 1]));
             setTimeout(ToggleShootas, 2000);
             gameInterval = setInterval(UpdateGameSpeed, 10000);
-
+            $(this).attr("disabled", "true");
 
             // ConfigureMusic();
             CreateComponents();
@@ -265,10 +286,12 @@ function ConfigureButtons() {
                 easing: "linear"
             });
 
-            let newTitleY = $("#gameInfo")[0].getBoundingClientRect().bottom;
+            let newTitleY = $("#display")[0].getBoundingClientRect().bottom;
+            let newTitleX = display.width * 0.75;
 
             $(this).animate({
-                top: newTitleY
+                top: newTitleY,
+                left: newTitleX
             }, {
                 duration: 2500,
                 easing: "linear"
@@ -424,7 +447,7 @@ function ShootGrade() {
         grade.css({
             position: "absolute",
             display: "none",
-            "background-color": "white",
+            "background-color": "lightgray",
             border: "1px solid black",
             color: GetGradeColor(currentGrade.grade),
             padding: "2px",
@@ -572,8 +595,8 @@ function UpdateGrade() {
 function UpdateGameSpeed() {
     clearInterval(shootasInterval);
 
-    assignmentSpeed -= 100;
-    shootasFrequency -= 10;
+    assignmentSpeed -= 150;
+    shootasFrequency -= 25;
 
     shootasInterval = setInterval(ShootAssignments, shootasFrequency);
 }
@@ -589,7 +612,7 @@ function GetGradeColor(grade) {
             gradeColor = "blue";
             break;
         case "C":
-            gradeColor = "yellow";
+            gradeColor = "rgb(146, 146, 32)";
             break;
         case "D":
             gradeColor = "darkorange";
