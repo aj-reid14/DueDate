@@ -1,4 +1,5 @@
-let gameStarted = false;
+let gameActive = false;
+let gameInterval;
 let display = $("#display")[0].getBoundingClientRect();
 let grades = ["A", "B", "C", "D", "F"];
 let currentGrade = {};
@@ -30,6 +31,8 @@ let shootasInterval;
 let shootasShooting = false;
 let shootasFrequency = 2000;
 let assignmentSpeed = 7000;
+let assignmentsInterval;
+let assignmentDropSpeed = assignmentSpeed * 0.15;
 let assignmentsActive;
 let assignments = [
     "./assets/images/projectiles/projectile_hw.png",
@@ -83,6 +86,16 @@ function GameLoop() {
     }
 
     setTimeout(GameLoop, 20);
+}
+
+function GameOver() {
+    gameActive = false;
+    clearInterval(shootasInterval);
+    clearInterval(assignmentsInterval);
+    clearInterval(gameInterval);
+
+    assignmentSpeed = 7000;
+    shootasFrequency = 2000;
 }
 
 function ConfigureMusic() {
@@ -228,32 +241,17 @@ function ConfigureMusic() {
 
 function ConfigureButtons() {
 
-    document.onkeydown = function (event) {
-        if (event.key === "s") {
-            ToggleShootas();
-        }
-    }
-
-    $(document).keydown(function (event) {
-        keymap[event.key] = true;
-    });
-
-    $(document).keyup(function (event) {
-        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-            player.src = "./assets/images/laptop/idle.gif";
-        }
-
-        delete keymap[event.key];
-    });
-
     $("#title").click(function () {
-        if (!gameStarted) {
-            gameStarted = true;
+        if (!gameActive) {
+            gameActive = true;
             currentGrade.index = 0;
             currentGrade.grade = grades[currentGrade.index];
             $("#currentGrade").text(currentGrade.grade);
             $("#nextGradeArea").css("background-color", GetGradeColor(grades[currentGrade.index + 1]));
-            
+            setTimeout(ToggleShootas, 2000);
+            gameInterval = setInterval(UpdateGameSpeed, 10000);
+
+
             // ConfigureMusic();
             CreateComponents();
             GameLoop();
@@ -277,26 +275,44 @@ function ConfigureButtons() {
             });
         }
     });
+
+    document.onkeydown = function (event) {
+        if (event.key === "s") {
+            // ToggleShootas();
+        }
+    }
+
+    $(document).keydown(function (event) {
+        keymap[event.key] = true;
+    });
+
+    $(document).keyup(function (event) {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            player.src = "./assets/images/laptop/idle.gif";
+        }
+
+        delete keymap[event.key];
+    });
 }
 
 function ToggleShootas() {
 
-    if (gameStarted) {
+    if (gameActive) {
 
         if (!shootasShooting) {
             shootasShooting = true;
-            shootasInterval = setInterval(function () {
-
-                let randShoota = Math.floor(Math.random() * shootas.length);
-                randShoota = shootas[randShoota];
-                CreateDaBoom(randShoota);
-
-            }, shootasFrequency);
+            shootasInterval = setInterval(ShootAssignments, shootasFrequency);
         } else {
             shootasShooting = false;
             clearInterval(shootasInterval);
         }
     }
+}
+
+function ShootAssignments() {
+    let randShoota = Math.floor(Math.random() * shootas.length);
+    randShoota = shootas[randShoota];
+    CreateDaBoom(randShoota);
 }
 
 function CreateDaBoom(shoota) {
@@ -319,6 +335,8 @@ function CreateDaBoom(shoota) {
 
     $("#display").append(daBoom);
 
+    shootaSound.pause();
+    shootaSound.currentTime = 0;
     shootaSound.play();
 
     $(`#${daBoomID}`).fadeIn(150, function () {
@@ -374,7 +392,7 @@ function CreateAssignment(x, y) {
                         lateSound.currentTime = 0;
                         lateSound.src = lateSounds[randSound];
                     },
-                    duration: assignmentSpeed * 0.15,
+                    duration: assignmentDropSpeed,
                     easing: "linear",
                     complete: function () {
                         assignmentsMissed++;
@@ -402,13 +420,13 @@ function ShootGrade() {
         }, player.cooldown);
 
         let grade = $("<h2 active='true' class='grade'>");
-        grade.text("A");
+        grade.text(currentGrade.grade);
         grade.css({
             position: "absolute",
             display: "none",
             "background-color": "white",
             border: "1px solid black",
-            color: "green",
+            color: GetGradeColor(currentGrade.grade),
             padding: "2px",
             top: player.y - 10,
             left: player.x + ($(player.element)[0].getBoundingClientRect().width / 2) - 10
@@ -495,58 +513,69 @@ function UpdateScore() {
 }
 
 function UpdateGrade() {
-    switch (assignmentsMissed) {
-        case 0:
-            $("#currentGradeArea").css({
-                "background-color": GetGradeColor(currentGrade.grade),
-                height: "100%",
-                top: 0
-            });
-            break;
-        case 1:
-            $("#currentGradeArea").css({
-                height: "80%",
-                top: "20%"
-            });
-            break;
-        case 2:
-            $("#currentGradeArea").css({
-                height: "60%",
-                top: "40%"
-            });
-            break;
-        case 3:
-            $("#currentGradeArea").css({
-                height: "40%",
-                top: "60%"
-            });
-            break;
-        case 4:
-            $("#currentGradeArea").css({
-                height: "20%",
-                top: "80%"
-            });
-            break;
-        case 5:
+    if (gameActive) {
+        switch (assignmentsMissed) {
+            case 0:
+                $("#currentGradeArea").css({
+                    "background-color": GetGradeColor(currentGrade.grade),
+                    height: "100%",
+                    top: 0
+                });
+                break;
+            case 1:
+                $("#currentGradeArea").css({
+                    height: "80%",
+                    top: "20%"
+                });
+                break;
+            case 2:
+                $("#currentGradeArea").css({
+                    height: "60%",
+                    top: "40%"
+                });
+                break;
+            case 3:
+                $("#currentGradeArea").css({
+                    height: "40%",
+                    top: "60%"
+                });
+                break;
+            case 4:
+                $("#currentGradeArea").css({
+                    height: "20%",
+                    top: "80%"
+                });
+                break;
+            case 5:
 
-            assignmentsMissed = 0;
-            currentGrade.grade = grades[++currentGrade.index];
-            if (currentGrade.grade === "F") {
-                ToggleShootas();
-            }    
+                assignmentsMissed = 0;
+                currentGrade.grade = grades[++currentGrade.index];
+                if (currentGrade.grade === "F") {
+                    GameOver();
+                }
 
-            $("#currentGrade").text(currentGrade.grade);
-            $("#currentGradeArea").css({
-                "background-color": GetGradeColor(currentGrade.grade),
-                height: "100%",
-                top: 0
-            });
+                $("#currentGrade").text(currentGrade.grade);
+                $("#currentGradeArea").css({
+                    "background-color": GetGradeColor(currentGrade.grade),
+                    height: "100%",
+                    top: 0
+                });
 
-            if (currentGrade.index < (grades.length - 1)) {
-                $("#nextGradeArea").css("background-color", GetGradeColor(grades[currentGrade.index + 1]));
-            }
-            break;
+                if (currentGrade.index < (grades.length - 1)) {
+                    $("#nextGradeArea").css("background-color", GetGradeColor(grades[currentGrade.index + 1]));
+                }
+                break;
+        }
     }
+}
+
+function UpdateGameSpeed() {
+    clearInterval(shootasInterval);
+
+    assignmentSpeed -= 100;
+    shootasFrequency -= 10;
+
+    shootasInterval = setInterval(ShootAssignments, shootasFrequency);
 }
 
 function GetGradeColor(grade) {
