@@ -6,6 +6,18 @@ let keymap = {};
 let music = new Audio("assets/audio/theme.wav");
 let shootaSound = new Audio("assets/audio/shot_fired.wav");
 let submitSound = new Audio("assets/audio/submit_sound.wav");
+let lateSound = new Audio("assets/audio/late_sounds/honey.wav");
+let lateSounds = [
+    "assets/audio/late_sounds/what-are-you-doing.wav",
+    "assets/audio/late_sounds/come-on-1.wav",
+    "assets/audio/late_sounds/come-on-2.wav",
+    "assets/audio/late_sounds/got-it-1.wav",
+    "assets/audio/late_sounds/got-it-2.wav",
+    "assets/audio/late_sounds/honey.wav",
+    "assets/audio/late_sounds/no-1.wav",
+    "assets/audio/late_sounds/no-2.wav",
+    "assets/audio/late_sounds/no-3.wav",
+];
 let musicPlaying = false;
 let platforms = [];
 let lateCan;
@@ -119,8 +131,7 @@ function CreateComponents() {
     }
 
     // Create Late Can
-    lateCan = new component("late-can", 90, 115, "./assets/images/late_can.png", display.width - 95, display.height - 115, "image");
-    console.log(display.height);
+    lateCan = new component("late-bin", 160, 80, "./assets/images/late-bin.png", display.width - 165, display.height - 90, "image");
 }
 
 function component(id, width, height, color, x, y, type) {
@@ -190,7 +201,7 @@ function Move(id, direction) {
         case "right": {
             let currLeft = parseInt($(`#${id}`).css("left"), 10);
             let currRight = $(`#${id}`)[0].getBoundingClientRect().right;
-            let maxRight = display.right - 95;
+            let maxRight = display.right - 165;
             player.x = Math.floor(currLeft + player.speedX);
 
             if (currRight < maxRight) {
@@ -213,7 +224,7 @@ function ConfigureMusic() {
 
 function ConfigureButtons() {
 
-    document.onkeydown = function(event) {
+    document.onkeydown = function (event) {
         if (event.key === "s") {
             ToggleShootas();
         }
@@ -231,7 +242,7 @@ function ConfigureButtons() {
         delete keymap[event.key];
     });
 
-    $("#title").click(function() {
+    $("#title").click(function () {
         if (!gameStarted) {
             gameStarted = true;
 
@@ -251,11 +262,11 @@ function ConfigureButtons() {
             let newTitleY = $("#gameInfo")[0].getBoundingClientRect().bottom;
 
             $(this).animate({
-                top: newTitleY                
+                top: newTitleY
             }, {
                 duration: 2500,
                 easing: "linear"
-            });            
+            });
         }
     });
 }
@@ -264,10 +275,10 @@ function ToggleShootas() {
 
     if (!shootasShooting) {
         shootasShooting = true;
-        shootasInterval = setInterval(function() {
+        shootasInterval = setInterval(function () {
 
             let randShoota = Math.floor(Math.random() * shootas.length);
-            randShoota = shootas[randShoota];        
+            randShoota = shootas[randShoota];
             CreateDaBoom(randShoota);
 
         }, shootasFrequency);
@@ -333,12 +344,29 @@ function CreateAssignment(x, y) {
     }, {
         duration: assignmentSpeed,
         easing: "linear",
-        step: function() {
-            if (assignment.attr("collided") === "true") {assignment.remove();};
+        step: function () {
+            if (assignment.attr("collided") === "true") { assignment.remove(); };
         },
         complete: function () {
-            assignment.fadeOut(150, function () {
-                assignment.remove();
+            console.log("done");
+
+            assignment.animate({
+                top: display.bottom - 80
+            }, {
+                start: function() {
+                    let randSound = Math.floor(Math.random() * lateSounds.length);
+                    lateSound.pause();
+                    lateSound.currentTime = 0;
+                    lateSound.src = lateSounds[randSound];
+                },
+                duration: assignmentSpeed * 0.15,
+                easing: "linear",
+                complete: function () {
+                    lateSound.play();
+                    assignment.fadeOut(50, function () {
+                        assignment.remove();
+                    });
+                }
             });
         }
     });
@@ -346,15 +374,15 @@ function CreateAssignment(x, y) {
 }
 
 function ShootGrade() {
-    
+
     if (!player.shooting) {
-        
+
         player.shooting = true;
 
-        setTimeout(function() {
+        setTimeout(function () {
             player.shooting = false;
         }, player.cooldown);
-      
+
         let grade = $("<h2 active='true' class='grade'>");
         grade.text("A");
         grade.css({
@@ -365,11 +393,11 @@ function ShootGrade() {
             color: "green",
             padding: "2px",
             top: player.y - 10,
-            left: player.x  + ($(player.element)[0].getBoundingClientRect().width / 2) - 10
+            left: player.x + ($(player.element)[0].getBoundingClientRect().width / 2) - 10
         });
-        
+
         $("#display").append(grade);
-    
+
         grade.fadeIn(150);
         grade.animate({
             top: -60
@@ -379,7 +407,7 @@ function ShootGrade() {
             start: function () {
                 assignmentsActive = $(".assignment")
             },
-            step: function() {
+            step: function () {
                 if (assignmentsActive.length !== 0) {
                     for (let i = 0; i < assignmentsActive.length; i++) {
                         if (CheckCollision(grade, assignmentsActive[i])) {
@@ -388,11 +416,11 @@ function ShootGrade() {
                     }
                 }
             },
-            complete: function() {
+            complete: function () {
                 submitSound.pause();
                 submitSound.currentTime = 0;
 
-                grade.fadeOut(1000, function() {
+                grade.fadeOut(1000, function () {
                     grade.remove();
                 });
             }
@@ -413,13 +441,13 @@ function CheckCollision(grade, assignment) {
         (gradeBox.right < assignmentBox.left) ||
         (gradeBox.left > assignmentBox.right)) { collided = false; }
 
-        if (collided && gradeActive === "true") {
-            $(grade).attr("active", "false");
-            submitSound.play();
-            grade.remove();
-            $(assignment).attr("collided", "true");
-            CreateHitEffect(gradeBox, assignmentBox);
-        }
+    if (collided && gradeActive === "true") {
+        $(grade).attr("active", "false");
+        submitSound.play();
+        grade.remove();
+        $(assignment).attr("collided", "true");
+        CreateHitEffect(gradeBox, assignmentBox);
+    }
 
     return collided;
 }
@@ -444,8 +472,8 @@ function CreateHitEffect(grade, assignment) {
 
     $("#display").append(hitEffect);
 
-    setTimeout(function() {
-        hitEffect.fadeOut(350, function() {
+    setTimeout(function () {
+        hitEffect.fadeOut(350, function () {
             hitEffect.remove();
         });
     }, 150);
