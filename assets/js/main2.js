@@ -8,6 +8,8 @@ let shootaSound = new Audio("assets/audio/shot_fired.wav");
 let submitSound = new Audio("assets/audio/submit_sound.wav");
 let musicPlaying = false;
 let platforms = [];
+let lateCan;
+
 let shootas = [];
 let shootasInterval;
 let shootasShooting = false;
@@ -22,10 +24,7 @@ let assignments = [
 
 $(document).ready(function () {
     StartScreen();
-    CreateComponents();
     ConfigureButtons();
-    // ConfigureMusic();
-    GameLoop();
 });
 
 function StartScreen() {
@@ -118,6 +117,10 @@ function CreateComponents() {
 
         platformTop += shootaDistance;
     }
+
+    // Create Late Can
+    lateCan = new component("late-can", 90, 115, "./assets/images/late_can.png", display.width - 95, display.height - 115, "image");
+    console.log(display.height);
 }
 
 function component(id, width, height, color, x, y, type) {
@@ -187,7 +190,7 @@ function Move(id, direction) {
         case "right": {
             let currLeft = parseInt($(`#${id}`).css("left"), 10);
             let currRight = $(`#${id}`)[0].getBoundingClientRect().right;
-            let maxRight = display.right;
+            let maxRight = display.right - 95;
             player.x = Math.floor(currLeft + player.speedX);
 
             if (currRight < maxRight) {
@@ -232,6 +235,10 @@ function ConfigureButtons() {
         if (!gameStarted) {
             gameStarted = true;
 
+            // ConfigureMusic();
+            CreateComponents();
+            GameLoop();
+
             let doorHeight = $("#door")[0].getBoundingClientRect().height;
 
             $("#door").animate({
@@ -248,8 +255,7 @@ function ConfigureButtons() {
             }, {
                 duration: 2500,
                 easing: "linear"
-            });
-            
+            });            
         }
     });
 }
@@ -323,7 +329,7 @@ function CreateAssignment(x, y) {
     let maxWidth = display.width - assignment.width() - 6;
 
     assignment.animate({
-        left: maxWidth + 55
+        left: maxWidth - 50
     }, {
         duration: assignmentSpeed,
         easing: "linear",

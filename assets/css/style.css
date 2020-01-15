@@ -21,7 +21,7 @@ img, .platform, #title {
 }
 
 #title:hover {
-    animation: titleColor 2s linear infinite alternate forwards;
+    animation: titleColor 1s linear infinite alternate forwards;
 }
 
 #gameInfo {
@@ -43,8 +43,6 @@ img, .platform, #title {
     margin-top: 25px;
     border: 3px groove black;
     border-bottom: 15px solid black;
-    border-left: 15px solid black;
-    border-right: 15px solid black;
     padding: 0;
 
     background: url("../images/background5.gif") no-repeat;
@@ -81,6 +79,10 @@ img, .platform, #title {
     -moz-animation: gradeTwitch 200ms linear infinite alternate forwards;
     -o-animation: gradeTwitch 200ms linear infinite alternate forwards;
     -webkit-animation: gradeTwitch 200ms linear infinite alternate forwards;
+}
+
+#late-can {
+    z-index: 15;
 }
 
 /* Assignment Spin Animation */
@@ -149,20 +151,20 @@ img, .platform, #title {
 /* Title Color Animation */
 @keyframes titleColor {
     from {background-color: whitesmoke;}
-    to {background-color: rgb(169, 245, 245);}
+    to {background-color: rgb(41, 152, 156);}
 }
 
 @-moz-keyframes titleColor {
     from {background-color: whitesmoke;}
-    to {background-color: rgb(169, 245, 245);}
+    to {background-color: rgb(41, 152, 156);}
 }
 
 @-o-keyframes titleColor {
     from {background-color: whitesmoke;}
-    to {background-color: rgb(169, 245, 245);}
+    to {background-color: rgb(41, 152, 156);}
 }
 
 @-webkit-keyframes titleColor {
     from {background-color: whitesmoke;}
-    to {background-color: rgb(169, 245, 245);}
+    to {background-color: rgb(41, 152, 156);}
 }
