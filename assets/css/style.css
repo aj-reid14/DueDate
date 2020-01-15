@@ -76,7 +76,7 @@ img, .platform, #title, #scoreInfo, #gameInfo {
     left: 0;
     width: 125px;
     height: 100%;
-    background-color: green;
+    background-color: olivedrab;
     border-right: 2px solid black;
 }
 

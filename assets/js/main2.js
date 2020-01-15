@@ -534,7 +534,7 @@ function UpdateGrade() {
             if (currentGrade.grade === "F") {
                 ToggleShootas();
             }    
-            
+
             $("#currentGrade").text(currentGrade.grade);
             $("#currentGradeArea").css({
                 "background-color": GetGradeColor(currentGrade.grade),
@@ -563,7 +563,7 @@ function GetGradeColor(grade) {
             gradeColor = "yellow";
             break;
         case "D":
-            gradeColor = "orange";
+            gradeColor = "darkorange";
             break;
         case "F":
             gradeColor = "red";
