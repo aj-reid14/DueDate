@@ -4,10 +4,10 @@ A fun little game that should motivate anyone in this Web Dev class to get their
 
 ## Inspiration
 
- Characters based on our great Instructor and our two Great TAs:
- - Jonathan
- - Charlie 
- - Darian
+ Characters based on our amazing Instructor and our two awesome TAs:
+ - Jonathan (Instuctor)
+ - Charlie (TA)
+ - Darian (TA)
 
  ## Accomplished Tasks
 
